@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* SportPlanner Design System - Core Variables */
+:root {
+  /* =========================================================================
+     Color Palette - Light Theme (Default)
+     ========================================================================= */
+  /* Brand Colors */
+  --color-primary-400: #34d399; /* Emerald 400 */
+  --color-primary-500: #10b981; /* Emerald 500 */
+  --color-primary-600: #059669; /* Emerald 600 */
+  --color-primary-glow: rgba(16, 185, 129, 0.4);
+
+  --color-secondary-400: #fb923c; /* Orange 400 */
+  --color-secondary-500: #f97316; /* Orange 500 */
+  --color-secondary-600: #ea580c; /* Orange 600 */
+  --color-secondary-glow: rgba(249, 115, 22, 0.4);
+
+  /* Backgrounds */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4f6; /* Gray 100 */
+  --bg-tertiary: #e5e7eb;  /* Gray 200 */
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --glass-blur: 12px;
+
+  /* Typography */
+  --text-primary: #111827; /* Gray 900 */
+  --text-secondary: #4b5563; /* Gray 600 */
+  --text-accent: #10b981;    /* Primary 500 */
+  --text-inverse: #ffffff;
+
+  /* Borders & Dividers */
+  --border-subtle: #e5e7eb;
+  --border-focus: #10b981;
+}
+
+/* =========================================================================
+    Color Palette - Dark Theme
+    ========================================================================= */
+body.dark-theme {
+  /* Brand Colors - Adjusted for Dark Mode brightness */
+  --color-primary-400: #34d399;
+  --color-primary-500: #10b981;
+  --color-primary-600: #059669;
+  
+  /* Backgrounds */
+  --bg-primary: #0f172a; /* Slate 900 - Deep Blue/Black */
+  --bg-secondary: #1e293b; /* Slate 800 */
+  --bg-tertiary: #334155;  /* Slate 700 */
+  --bg-glass: rgba(15, 23, 42, 0.7);
+
+  /* Typography */
+  --text-primary: #f8fafc; /* Slate 50 */
+  --text-secondary: #94a3b8; /* Slate 400 */
+  --text-accent: #34d399;    /* Primary 400 (Brighter on dark) */
+  --text-inverse: #0f172a;
+
+  /* Borders */
+  --border-subtle: #334155;
+  --border-focus: #34d399;
+}
+
+/* =========================================================================
+   Global Reset & Base Styles
+   ========================================================================= */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* =========================================================================
+   Utility Classes (Tailwind-like logic without Tailwind)
+   ========================================================================= */
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary-400), var(--color-secondary-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: radial-gradient(circle at top left, var(--color-primary-500), var(--color-primary-600));
+  color: var(--text-inverse);
+  box-shadow: 0 4px 6px -1px var(--color-primary-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px var(--color-primary-glow);
+}
+
+.btn-secondary {
+  background: radial-gradient(circle at top left, var(--color-secondary-500), var(--color-secondary-600));
+  color: white;
+  box-shadow: 0 4px 6px -1px var(--color-secondary-glow);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px var(--color-secondary-glow);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+}
+.btn-ghost:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Glass Card */
+.glass-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+}
+
+/* Section Spacing */
+section {
+  padding: 5rem 0;
+}
