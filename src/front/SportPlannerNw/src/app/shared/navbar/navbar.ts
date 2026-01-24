@@ -1,9 +1,11 @@
 import { Component, Inject, signal, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
   host: { 'ngSkipHydration': 'true' }
