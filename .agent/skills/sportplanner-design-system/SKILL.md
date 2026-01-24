@@ -16,6 +16,7 @@ Esta habilidad actúa como la fuente de verdad central para el diseño visual de
     *   Pregunta al usuario: *"Hemos definido un nuevo estilo/componente ([Nombre]). ¿Quieres que lo añada a la habilidad 'sportplanner-design-system' para futuras referencias?"*
     *   Si el usuario está de acuerdo, usa la herramienta `replace_file_content` o `multi_replace_file_content` para actualizar este archivo con las nuevas especificaciones.
     *   Mantén el formato Markdown limpio y organizado.
+4.  **Prohibición de Degradados (Flat Design)**: No utilices degradados (`linear-gradient`, `text-gradient`, `bg-gradient-to-*`) en textos, fondos o bordes. El estilo oficial es "Flat Premium" usando colores sólidos. **Excepción única**: Solo si el usuario lo sugiere explícitamente para un elemento concreto.
 
 ## 🎨 Design Tokens (Estado Actual: Inicializando)
 
@@ -45,7 +46,7 @@ Estas variables cambian automáticamente según la clase `.dark` (Tailwind Nativ
 
 #### Utilidades Clave
 *   **Glassmorphism**: `.glass-card` (Fondo translúcido + Blur + Borde sutil)
-*   **Text Gradient**: `.text-gradient` (Degradado Primary -> Secondary)
+*   **Flat Text**: Siempre usa `text-primary` o `text-foreground` en lugar de degradados.
 
 ### Tipografía
 *   **Familia Tipográfica**: TBD (ej. Inter, Roboto)
