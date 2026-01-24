@@ -1,7 +1,8 @@
 import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,8 @@ import { RouterLink } from '@angular/router';
 })
 export class Login {
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   
   protected form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -19,16 +22,31 @@ export class Login {
   });
 
   protected showPassword = signal(false);
+  protected loading = signal(false);
+  protected errorMessage = signal<string | null>(null);
 
   togglePassword() {
     this.showPassword.update(v => !v);
   }
 
-  onSubmit() {
-    if (this.form.valid) {
-      console.log('Login Payload:', this.form.getRawValue());
-    } else {
+  async onSubmit() {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
+      return;
+    }
+
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    const { email, password } = this.form.getRawValue();
+    const result = await this.authService.signIn(email, password);
+
+    this.loading.set(false);
+
+    if (result.success) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.errorMessage.set(result.error || 'Error al iniciar sesión');
     }
   }
 }

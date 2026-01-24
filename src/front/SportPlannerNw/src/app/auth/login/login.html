@@ -7,7 +7,7 @@
         <div class="glass-card p-8 md:p-10 space-y-8">
             <div class="text-center space-y-2">
                 <h1 class="text-3xl font-bold tracking-tight text-foreground">
-                    Bienvenido a <span class="text-gradient">SportPlanner</span>
+                    Bienvenido a <span class="text-primary">SportPlanner</span>
                 </h1>
                 <p class="text-muted-foreground text-sm">
                     Gestiona tu equipo como un profesional
@@ -60,12 +60,26 @@
                     </div>
                 </div>
 
+                <!-- Error Message -->
+                @if (errorMessage()) {
+                    <div class="bg-destructive/10 border border-destructive/20 rounded-md p-3 text-sm text-destructive">
+                        {{ errorMessage() }}
+                    </div>
+                }
+
                 <button
                     type="submit"
-                    [disabled]="form.invalid"
-                    class="btn btn-primary w-full shadow-lg shadow-primary/20"
+                    [disabled]="form.invalid || loading()"
+                    class="btn btn-primary w-full shadow-lg shadow-primary/20 relative"
                 >
-                    Iniciar Sesión
+                    @if (loading()) {
+                        <span class="opacity-0">Iniciar Sesión</span>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                        </div>
+                    } @else {
+                        <span>Iniciar Sesión</span>
+                    }
                 </button>
             </form>
 

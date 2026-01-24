@@ -1,7 +1,8 @@
 import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -12,6 +13,8 @@ import { RouterLink } from '@angular/router';
 })
 export class Register {
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   protected form = this.fb.nonNullable.group({
     fullName: ['', [Validators.required, Validators.minLength(2)]],
@@ -21,21 +24,37 @@ export class Register {
   });
 
   protected showPassword = signal(false);
+  protected loading = signal(false);
+  protected errorMessage = signal<string | null>(null);
 
   togglePassword() {
     this.showPassword.update(v => !v);
   }
 
-  onSubmit() {
-    if (this.form.valid) {
-      if (this.form.controls.password.value !== this.form.controls.confirmPassword.value) {
-          // In a real app we would use a Cross Field Validator, keeping it simple for UI demo
-          console.error('Passwords mismatch');
-          return;
-      }
-      console.log('Register Payload:', this.form.getRawValue());
+  async onSubmit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const { password, confirmPassword } = this.form.controls;
+    if (password.value !== confirmPassword.value) {
+      this.errorMessage.set('Las contraseñas no coinciden');
+      return;
+    }
+
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    const { fullName, email, password: pwd } = this.form.getRawValue();
+    const result = await this.authService.signUp(email, pwd, fullName);
+
+    this.loading.set(false);
+
+    if (result.success) {
+      this.router.navigate(['/dashboard']);
     } else {
-        this.form.markAllAsTouched();
+      this.errorMessage.set(result.error || 'Error al crear la cuenta');
     }
   }
 }

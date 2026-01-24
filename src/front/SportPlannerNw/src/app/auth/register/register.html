@@ -86,13 +86,27 @@
                     >
                 </div>
 
+                <!-- Error Message -->
+                @if (errorMessage()) {
+                    <div class="bg-destructive/10 border border-destructive/20 rounded-md p-3 text-sm text-destructive">
+                        {{ errorMessage() }}
+                    </div>
+                }
+
                 <div class="pt-2">
                     <button
                         type="submit"
-                        [disabled]="form.invalid"
-                        class="btn btn-primary w-full shadow-lg shadow-primary/20"
+                        [disabled]="form.invalid || loading()"
+                        class="btn btn-primary w-full shadow-lg shadow-primary/20 relative"
                     >
-                        Crear Cuenta
+                        @if (loading()) {
+                            <span class="opacity-0">Crear Cuenta</span>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                            </div>
+                        } @else {
+                            <span>Crear Cuenta</span>
+                        }
                     </button>
                 </div>
             </form>

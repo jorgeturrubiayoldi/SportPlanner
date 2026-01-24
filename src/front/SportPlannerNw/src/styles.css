@@ -94,9 +94,10 @@
 }
 
 @layer utilities {
-  .text-gradient {
+  /* .text-gradient removed as per user request for flat design */
+  /*.text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
-  }
+  }*/
   .glass-card {
     /* Manual fallback for arbitrary opacity since native tw4 opacity syntax differs slightly */
     background-color: color-mix(in srgb, var(--color-background) 80%, transparent);

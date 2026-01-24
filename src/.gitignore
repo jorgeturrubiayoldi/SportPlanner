@@ -1,0 +1,43 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# Visual Studio / .NET
+.vs/
+bin/
+obj/
+*.dll
+*.pdb
+*.user
+*.suo
+*.cache
+*.filelist.txt
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio Code
+.vscode/
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log
+yarn-error.log
+.sass-cache/
+connect.lock
+*.js.map
+*.ts.map
+
+# Windows Specific
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
