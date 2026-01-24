@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  /* Emerald 500 as Primary */
+  --color-primary: hsl(160 84% 39%);
+  --color-primary-foreground: hsl(0 0% 100%);
+
+  /* Orange 500 as Secondary */
+  --color-secondary: hsl(25 95% 53%);
+  --color-secondary-foreground: hsl(0 0% 100%);
+
+  /* Light Mode Backgrounds */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(222.2 84% 4.9%);
+
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(222.2 84% 4.9%);
+  
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(222.2 84% 4.9%);
+
+  --color-muted: hsl(210 40% 96.1%);
+  --color-muted-foreground: hsl(215.4 16.3% 46.9%);
+
+  --color-accent: hsl(210 40% 96.1%);
+  --color-accent-foreground: hsl(222.2 47.4% 11.2%);
+
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(210 40% 98%);
+
+  --color-border: hsl(214.3 31.8% 91.4%);
+  --color-input: hsl(214.3 31.8% 91.4%);
+  --color-ring: hsl(160 84% 39%); /* Primary ring */
+  
+  --radius: 0.5rem;
+}
+
+/* Custom variable values for Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: hsl(222 47% 11%);
+    --color-foreground: hsl(210 40% 98%);
+    --color-card: hsl(222 47% 11%);
+    --color-card-foreground: hsl(210 40% 98%);
+    --color-popover: hsl(222 47% 11%);
+    --color-popover-foreground: hsl(210 40% 98%);
+    --color-primary: hsl(158 64% 52%);
+    --color-primary-foreground: hsl(222 47.4% 11.2%);
+    --color-muted: hsl(217.2 32.6% 17.5%);
+    --color-muted-foreground: hsl(215 20.2% 65.1%);
+    --color-accent: hsl(217.2 32.6% 17.5%);
+    --color-accent-foreground: hsl(210 40% 98%);
+    --color-destructive: hsl(0 62.8% 30.6%);
+    --color-destructive-foreground: hsl(210 40% 98%);
+    --color-border: hsl(217.2 32.6% 17.5%);
+    --color-input: hsl(217.2 32.6% 17.5%);
+    --color-ring: hsl(158 64% 52%);
+  }
+}
+
+/* 
+   Manual Dark Mode Override 
+   When the .dark class is present on html/body, override CSS variables.
+   Tailwind v4 uses CSS variables natively in its theme, so updating them here updates the theme.
+*/
+.dark {
+  --color-background: hsl(222 47% 11%);
+  --color-foreground: hsl(210 40% 98%);
+  --color-card: hsl(222 47% 11%);
+  --color-card-foreground: hsl(210 40% 98%);
+  --color-popover: hsl(222 47% 11%);
+  --color-popover-foreground: hsl(210 40% 98%);
+  --color-primary: hsl(158 64% 52%);
+  --color-primary-foreground: hsl(222 47.4% 11.2%);
+  --color-muted: hsl(217.2 32.6% 17.5%);
+  --color-muted-foreground: hsl(215 20.2% 65.1%);
+  --color-accent: hsl(217.2 32.6% 17.5%);
+  --color-accent-foreground: hsl(210 40% 98%);
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: hsl(210 40% 98%);
+  --color-border: hsl(217.2 32.6% 17.5%);
+  --color-input: hsl(217.2 32.6% 17.5%);
+  --color-ring: hsl(158 64% 52%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+  .glass-card {
+    /* Manual fallback for arbitrary opacity since native tw4 opacity syntax differs slightly */
+    background-color: color-mix(in srgb, var(--color-background) 80%, transparent);
+    @apply backdrop-blur-md border border-border shadow-sm rounded-2xl;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+  }
+  .btn-primary {
+    /* Tailwind 4 gradient/shadow syntax adjustments if needed, sticking to standard utils */
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:translate-y-[-2px];
+    --tw-shadow-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+  .btn-ghost {
+    @apply hover:bg-accent hover:text-accent-foreground text-foreground;
+  }
+}

@@ -1,59 +1,63 @@
-<section class="pricing-section">
-  <div class="container">
-    <div class="section-header">
-       <h2 class="section-title">Planes flexibles para <span class="text-gradient">todos</span></h2>
-       <p class="section-subtitle">Empieza gratis y escala a medida que crece tu club.</p>
+<section class="py-32 bg-muted/30 relative">
+  <div class="container mx-auto px-6">
+    <div class="text-center max-w-3xl mx-auto mb-20">
+       <h2 class="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+         Planes flexibles para <span class="text-gradient">todos</span>
+       </h2>
+       <p class="text-xl text-muted-foreground">
+         Empieza gratis y escala a medida que crece tu club.
+       </p>
     </div>
     
-    <div class="pricing-grid">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center max-w-6xl mx-auto">
        <!-- Free Tier -->
-       <div class="pricing-card glass-card">
-          <div class="card-header">
-             <h3>Entrenador</h3>
-             <div class="price">0€<span class="period">/mes</span></div>
-             <p class="plan-desc">Perfecto para empezar.</p>
+       <div class="glass-card p-10 flex flex-col relative transition-all hover:border-primary/50">
+          <div class="text-center mb-8">
+             <h3 class="text-2xl font-bold mb-2">Entrenador</h3>
+             <div class="text-5xl font-extrabold text-foreground mb-2">0€<span class="text-lg font-medium text-muted-foreground">/mes</span></div>
+             <p class="text-muted-foreground">Perfecto para empezar.</p>
           </div>
-          <ul class="features-list">
-             <li><span class="check">✓</span> 1 Equipo</li>
-             <li><span class="check">✓</span> Pizarra Táctica Básica</li>
-             <li><span class="check">✓</span> Hasta 20 Jugadores</li>
-             <li><span class="check">✓</span> Planificación Semanal</li>
+          <ul class="space-y-4 mb-8 flex-1">
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> 1 Equipo</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Pizarra Táctica Básica</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Hasta 20 Jugadores</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Planificación Semanal</li>
           </ul>
-          <button class="btn btn-ghost w-full">Empezar Gratis</button>
+          <button class="btn btn-ghost w-full border border-border hover:bg-muted">Empezar Gratis</button>
        </div>
        
-       <!-- Pro Tier -->
-       <div class="pricing-card glass-card featured">
-          <div class="popular-badge">Más Popular</div>
-          <div class="card-header">
-             <h3>Club Pro</h3>
-             <div class="price">29€<span class="period">/mes</span></div>
-             <p class="plan-desc">Para clubes que quieren ganar.</p>
+       <!-- Pro Tier (Featured) -->
+       <div class="glass-card p-12 flex flex-col relative scale-105 border-primary shadow-2xl z-10 bg-background">
+          <div class="absolute -top-4 right-1/2 translate-x-1/2 bg-secondary text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg">Más Popular</div>
+          <div class="text-center mb-8">
+             <h3 class="text-2xl font-bold mb-2">Club Pro</h3>
+             <div class="text-6xl font-extrabold text-foreground mb-2">29€<span class="text-lg font-medium text-muted-foreground">/mes</span></div>
+             <p class="text-muted-foreground">Para clubes que quieren ganar.</p>
           </div>
-          <ul class="features-list">
-             <li><span class="check">✓</span> 5 Equipos</li>
-             <li><span class="check">✓</span> Pizarra Táctica Avanzada</li>
-             <li><span class="check">✓</span> Exportación de Video HD</li>
-             <li><span class="check">✓</span> Jugadores Ilimitados</li>
-             <li><span class="check">✓</span> Análisis de Rendimiento</li>
+          <ul class="space-y-4 mb-10 flex-1">
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> 5 Equipos</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Pizarra Táctica Avanzada</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Exportación de Video HD</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Jugadores Ilimitados</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Análisis de Rendimiento</li>
           </ul>
-          <button class="btn btn-primary w-full">Prueba de 14 días</button>
+          <button class="btn btn-primary w-full text-lg py-4">Prueba de 14 días</button>
        </div>
        
        <!-- Enterprise Tier -->
-       <div class="pricing-card glass-card">
-          <div class="card-header">
-             <h3>Federación</h3>
-             <div class="price">Personalizado</div>
-             <p class="plan-desc">Para grandes organizaciones.</p>
+       <div class="glass-card p-10 flex flex-col relative transition-all hover:border-primary/50">
+          <div class="text-center mb-8">
+             <h3 class="text-2xl font-bold mb-2">Federación</h3>
+             <div class="text-4xl font-extrabold text-foreground mb-2 py-3">Custom</div>
+             <p class="text-muted-foreground">Para grandes organizaciones.</p>
           </div>
-          <ul class="features-list">
-             <li><span class="check">✓</span> Equipos Ilimitados</li>
-             <li><span class="check">✓</span> Marca Blanca</li>
-             <li><span class="check">✓</span> API & Integraciones</li>
-             <li><span class="check">✓</span> Soporte Prioritario 24/7</li>
+          <ul class="space-y-4 mb-8 flex-1">
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Equipos Ilimitados</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Marca Blanca</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> API & Integraciones</li>
+             <li class="flex items-center gap-3 text-foreground"><span class="text-primary font-bold">✓</span> Soporte Prioritario 24/7</li>
           </ul>
-          <button class="btn btn-ghost w-full">Contactar Ventas</button>
+          <button class="btn btn-ghost w-full border border-border hover:bg-muted">Contactar Ventas</button>
        </div>
     </div>
   </div>

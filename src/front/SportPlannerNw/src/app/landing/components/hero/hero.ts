@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './hero.html',
   styleUrl: './hero.scss',
+  host: { 'ngSkipHydration': 'true' }
 })
 export class Hero {
 

@@ -21,12 +21,31 @@ Esta habilidad actúa como la fuente de verdad central para el diseño visual de
 
 *Nota: Esta sección se poblará a medida que evolucione el proyecto.*
 
-### Paleta de Colores
-*   **Acción Primaria**: TBD
-*   **Secundario/Acento**: TBD
-*   **Fondos**: TBD (Probablemente Dark Mode basado en temas del proyecto)
-*   **Texto**: TBD
-*   **Estados (Éxito, Advertencia, Error)**: TBD
+### Paleta de Colores (Tailwind CSS v4 Tokens)
+
+El sistema utiliza **HSL** para permitir opacidades dinámicas en Tailwind.
+
+#### Colores de Marca
+*   **Primary (Esmeralda)**: `hsl(160 84% 39%)` -> `bg-primary`, `text-primary`
+    *   *Uso*: Acciones principales, bordes activos, anillos de foco.
+*   **Secondary (Naranja)**: `hsl(25 95% 53%)` -> `bg-secondary`, `text-secondary`
+    *   *Uso*: Acentos, destacados, badges de "Nuevo" o "Popular".
+
+#### Paleta Semántica (Light / Dark Mode Automático)
+Estas variables cambian automáticamente según la clase `.dark` (Tailwind Native).
+
+| Token | Light Mode (Valor) | Dark Mode (Valor) | Uso |
+| :--- | :--- | :--- | :--- |
+| **background** | `hsl(0 0% 100%)` (Blanco) | `hsl(222 47% 11%)` (Slate 900) | Fondo global de la página |
+| **foreground** | `hsl(222.2 84% 4.9%)` | `hsl(210 40% 98%)` (Blanco roto) | Texto principal |
+| **card** | `hsl(0 0% 100%)` | `hsl(222 47% 11%)` | Fondo de tarjetas |
+| **muted** | `hsl(210 40% 96.1%)` | `hsl(217.2 32.6% 17.5%)` | Fondos secundarios, áreas deshabilitadas |
+| **muted-foreground** | `hsl(215.4 16.3% 46.9%)` | `hsl(215 20.2% 65.1%)` | Texto secundario o descriptivo |
+| **border** | `hsl(214.3 31.8% 91.4%)` | `hsl(217.2 32.6% 17.5%)` | Bordes de contenedores e inputs |
+
+#### Utilidades Clave
+*   **Glassmorphism**: `.glass-card` (Fondo translúcido + Blur + Borde sutil)
+*   **Text Gradient**: `.text-gradient` (Degradado Primary -> Secondary)
 
 ### Tipografía
 *   **Familia Tipográfica**: TBD (ej. Inter, Roboto)

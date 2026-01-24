@@ -5,7 +5,8 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
   selector: 'app-navbar',
   standalone: true,
   templateUrl: './navbar.html',
-  styleUrl: './navbar.scss'
+  styleUrl: './navbar.scss',
+  host: { 'ngSkipHydration': 'true' }
 })
 export class Navbar {
   isDarkMode = signal(false);
@@ -35,9 +36,9 @@ export class Navbar {
 
   private updateBodyClass() {
     if (this.isDarkMode()) {
-      this.document.body.classList.add('dark-theme');
+      this.document.documentElement.classList.add('dark');
     } else {
-      this.document.body.classList.remove('dark-theme');
+      this.document.documentElement.classList.remove('dark');
     }
   }
 }
