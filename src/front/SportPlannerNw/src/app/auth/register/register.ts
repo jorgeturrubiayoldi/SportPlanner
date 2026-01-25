@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -21,7 +21,21 @@ export class Register {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', [Validators.required]]
+  }, {
+    validators: [this.passwordMatchValidator]
   });
+
+  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    }
+    
+    return null;
+  }
 
   protected showPassword = signal(false);
   protected loading = signal(false);
@@ -34,12 +48,6 @@ export class Register {
   async onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      return;
-    }
-
-    const { password, confirmPassword } = this.form.controls;
-    if (password.value !== confirmPassword.value) {
-      this.errorMessage.set('Las contraseñas no coinciden');
       return;
     }
 

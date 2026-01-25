@@ -1,7 +1,10 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { SupabaseService } from './supabase.service';
 import { User } from '../models/user.model';
+import { environment } from '../../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +12,8 @@ import { User } from '../models/user.model';
 export class AuthService {
   private supabaseService = inject(SupabaseService);
   private router = inject(Router);
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/Auth`;
 
   currentUser = signal<User | null>(null);
   isAuthenticated = computed(() => this.currentUser() !== null);
@@ -22,46 +27,59 @@ export class AuthService {
     try {
       const { data: { session } } = await this.supabaseService.getClient().auth.getSession();
       if (session?.user) {
-        this.currentUser.set({
-          id: session.user.id,
-          email: session.user.email!,
-          fullName: session.user.user_metadata?.['fullName']
-        });
+        await this.loadProfile(session.user);
       }
     } catch (error) {
       console.error('Error checking session:', error);
     }
   }
 
+  private async loadProfile(authUser: any) {
+    try {
+      const { data: profile, error } = await this.supabaseService.getClient()
+        .from('user_profiles')
+        .select('*')
+        .eq('id', authUser.id)
+        .single();
+
+      if (profile) {
+        this.currentUser.set({
+          id: authUser.id,
+          email: authUser.email!,
+          fullName: profile.full_name || authUser.user_metadata?.['fullName'],
+          avatarUrl: profile.avatar_url,
+          phone: profile.phone
+        });
+      } else {
+        this.currentUser.set({
+          id: authUser.id,
+          email: authUser.email!,
+          fullName: authUser.user_metadata?.['fullName']
+        });
+      }
+    } catch (err) {
+      console.error('Error loading profile:', err);
+    }
+  }
+
   async signUp(email: string, password: string, fullName: string): Promise<{ success: boolean; error?: string }> {
     this.loading.set(true);
     try {
-      const { data, error } = await this.supabaseService.getClient().auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            fullName
-          }
-        }
+      const response = await firstValueFrom(
+        this.http.post<any>(`${this.apiUrl}/register`, { email, password, fullName })
+      );
+
+      // El registro en el back crea el usuario en Supabase, así que iniciamos sesión
+      // Podríamos recibir el token del back y usar setSession de Supabase
+      await this.supabaseService.getClient().auth.setSession({
+        access_token: response.token,
+        refresh_token: '' // Opcional dependiendo de tu implementación
       });
 
-      if (error) {
-        return { success: false, error: error.message };
-      }
-
-      if (data.user) {
-        this.currentUser.set({
-          id: data.user.id,
-          email: data.user.email!,
-          fullName: data.user.user_metadata?.['fullName']
-        });
-        return { success: true };
-      }
-
-      return { success: false, error: 'No se pudo crear el usuario' };
+      await this.checkSession();
+      return { success: true };
     } catch (error: any) {
-      return { success: false, error: error.message || 'Error desconocido' };
+      return { success: false, error: error.error?.message || 'Error al crear la cuenta' };
     } finally {
       this.loading.set(false);
     }
@@ -70,31 +88,25 @@ export class AuthService {
   async signIn(email: string, password: string): Promise<{ success: boolean; error?: string }> {
     this.loading.set(true);
     try {
-      const { data, error } = await this.supabaseService.getClient().auth.signInWithPassword({
-        email,
-        password
+      const response = await firstValueFrom(
+        this.http.post<any>(`${this.apiUrl}/login`, { email, password })
+      );
+
+      // Sincronizar el cliente de Supabase con el token recibido del backend
+      await this.supabaseService.getClient().auth.setSession({
+        access_token: response.token,
+        refresh_token: ''
       });
 
-      if (error) {
-        return { success: false, error: error.message };
-      }
-
-      if (data.user) {
-        this.currentUser.set({
-          id: data.user.id,
-          email: data.user.email!,
-          fullName: data.user.user_metadata?.['fullName']
-        });
-        return { success: true };
-      }
-
-      return { success: false, error: 'No se pudo iniciar sesión' };
+      await this.checkSession();
+      return { success: true };
     } catch (error: any) {
-      return { success: false, error: error.message || 'Error desconocido' };
+      return { success: false, error: error.error?.message || 'Credenciales inválidas' };
     } finally {
       this.loading.set(false);
     }
   }
+
 
   async signOut(): Promise<void> {
     try {
