@@ -75,7 +75,7 @@ export class SubscriptionComponent implements OnInit {
 
     this.loading.set(plan.id);
     
-    await new Promise(resolve => setTimeout(resolve, 800));
+    console.log(`Selecting plan ${plan.id} for user ${user.id}`);
 
     const result = await this.subService.subscribeToPlan(
       user.id, 
@@ -84,9 +84,14 @@ export class SubscriptionComponent implements OnInit {
       this.selectedSportId()
     );
 
+    console.log('Subscription result:', result);
+
     if (result.success) {
+      console.log('Redirecting to dashboard...');
+      this.loading.set(null); // Reset loading before navigating
       this.router.navigate(['/dashboard']);
     } else {
+      console.error('Subscription error:', result.error);
       alert('Error al procesar la suscripción: ' + result.error);
       this.loading.set(null);
     }

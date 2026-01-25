@@ -382,3 +382,7 @@
     </div>
   </aside>
 }
+
+@if (showSeasonModal()) {
+  <app-create-season-modal (seasonCreated)="onSeasonCreated()"></app-create-season-modal>
+}

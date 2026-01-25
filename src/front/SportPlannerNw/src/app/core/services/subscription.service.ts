@@ -56,7 +56,25 @@ export class SubscriptionService {
       this.hasActiveSubscription.set(true);
       return { success: true };
     } catch (err: any) {
-      return { success: false, error: err.error?.message || 'Error al procesar la suscripción' };
+      const errorMessage = err.error?.message || err.message || '';
+
+      // DETECCIÓN DE USUARIO FANTASMA:
+      // Si el backend dice que el usuario no existe, nuestra sesión local es basura.
+      if (errorMessage.includes('no existe en el sistema de autenticación')) {
+        console.warn('Detectada sesión inválida (Usuario Fantasma). Cerrando sesión...');
+        
+        // 1. Limpiar sesión local usando el cliente de Supabase
+        await this.supabase.getClient().auth.signOut();
+        
+        // 2. Redirigir al registro para crear el usuario real
+        this.router.navigate(['/auth/register'], { 
+          queryParams: { error: 'session_expired' } 
+        });
+        
+        return { success: false, error: 'Tu sesión ha expirado o el usuario no es válido. Por favor regístrate nuevamente.' };
+      }
+
+      return { success: false, error: errorMessage || 'Error al procesar la suscripción' };
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { subscriptionGuard } from './core/guards/subscription.guard';
+import { noSubscriptionGuard } from './core/guards/no-subscription.guard';
 
 export const routes: Routes = [
   {
@@ -18,7 +19,7 @@ export const routes: Routes = [
   {
     path: 'onboarding/subscription',
     loadComponent: () => import('./onboarding/subscription/subscription').then((m) => m.SubscriptionComponent),
-    canActivate: [authGuard]
+    canActivate: [authGuard, noSubscriptionGuard]
   },
   {
     path: 'dashboard',

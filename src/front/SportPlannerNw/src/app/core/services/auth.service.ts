@@ -101,10 +101,16 @@ export class AuthService {
           email: response.email,
           fullName: response.fullName
         });
-      }
 
-      // Ya no usamos Supabase directamente en el frontend para auth,
-      // el backend maneja todo. Evitamos el error de sesión.
+        // Sincronizar sesión con el cliente de Supabase para que los Guards funcionen
+        // El backend nos devuelve el access_token y refresh_token
+        if (response.token) {
+          await this.supabaseService.getClient().auth.setSession({
+            access_token: response.token,
+            refresh_token: response.refreshToken || ''
+          });
+        }
+      }
       
       return { success: true };
     } catch (error: any) {

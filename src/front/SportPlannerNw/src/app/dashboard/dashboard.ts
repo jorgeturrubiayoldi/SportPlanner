@@ -1,8 +1,10 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { ThemeService } from '../core/services/theme.service';
+import { SeasonService } from '../core/services/season.service';
+import { CreateSeasonModalComponent } from '../shared/components/create-season-modal/create-season-modal.component';
 
 interface StatCard {
   title: string;
@@ -32,19 +34,42 @@ interface NavItem {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink, CreateSeasonModalComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
   protected authService = inject(AuthService);
   protected themeService = inject(ThemeService);
+  protected seasonService = inject(SeasonService);
   private router = inject(Router);
 
   // Signals para UI state
   protected sidebarCollapsed = signal(false);
   protected mobileMenuOpen = signal(false);
+  protected showSeasonModal = signal(false); // Controla el modal
+
+  async ngOnInit() {
+    // Verificar si el usuario tiene una temporada activa
+    const user = this.authService.currentUser();
+    if (user?.id) {
+      const activeSeason = await this.seasonService.getActiveSeason(user.id);
+      if (!activeSeason) {
+        console.warn('Dashboard: No active season found. Prompting creation.');
+        this.showSeasonModal.set(true);
+      } else {
+        console.log('Dashboard: Active season found:', activeSeason.name);
+      }
+    }
+  }
+
+  onSeasonCreated() {
+    this.showSeasonModal.set(false);
+    // Aquí podrías recargar datos del dashboard si dependieran de la temporada
+    console.log('Temporada creada con éxito. Acceso concedido.');
+  }
 
   // Computed para obtener el nombre del usuario
   protected userName = computed(() => {

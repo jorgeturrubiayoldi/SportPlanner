@@ -12,13 +12,14 @@ var supabaseServiceKey = builder.Configuration["Supabase:ServiceKey"];
 builder.Services.AddScoped<Supabase.Client>(_ => 
     new Supabase.Client(supabaseUrl!, supabaseServiceKey, new Supabase.SupabaseOptions
     {
-        AutoRefreshToken = true,
-        AutoConnectRealtime = true
+        AutoRefreshToken = false, // Importante para ServiceKey
+        AutoConnectRealtime = false
     }));
 
 // Services Registration
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<ISeasonService, SeasonService>();
 
 // CORS Configuration
 builder.Services.AddCors(options =>

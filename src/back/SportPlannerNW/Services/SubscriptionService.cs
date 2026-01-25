@@ -32,6 +32,13 @@ public class SubscriptionService : ISubscriptionService
 
     public async Task<SubscriptionResponse> CreateSubscriptionAsync(SubscribeRequest request)
     {
+        // 0. Validar si ya tiene suscripción activa (Regla de negocio: 1 User = 1 Active Subscription)
+        bool hasActiveSubscription = await CheckSubscriptionStatusAsync(request.UserId);
+        if (hasActiveSubscription)
+        {
+            throw new InvalidOperationException($"El usuario {request.UserId} ya posee una suscripción activa.");
+        }
+
         // 1. Crear Suscripción
         var subscription = new SubscriptionModel
         {
@@ -44,11 +51,27 @@ public class SubscriptionService : ISubscriptionService
             IsPaid = true
         };
 
-        var subResponse = await _supabase.From<SubscriptionModel>().Insert(subscription);
-        var newSub = subResponse.Model;
+        Supabase.Postgrest.Responses.ModeledResponse<SubscriptionModel> subResponse; // Declare outside try block
+        try
+        {
+            subResponse = await _supabase.From<SubscriptionModel>().Insert(subscription);
+            
+            // Check for error in response if it doesn't throw (depends on client version/config)
+            if (subResponse.Model == null)
+              throw new Exception("La suscripción no se pudo crear (respuesta vacía).");
+        }
+        catch (Supabase.Postgrest.Exceptions.PostgrestException ex)
+        {
+            // Log ex.Message, ex.Details, ex.Hint to helpful debugging
+            // Si es un error de FK, el mensaje suele contener "violates foreign key constraint"
+            if (ex.Message.Contains("violates foreign key constraint"))
+            {
+                 throw new Exception($"El usuario con ID {request.UserId} no existe en el sistema de autenticación.");
+            }
+            throw new Exception($"Error de base de datos al crear suscripción: {ex.Message}");
+        }
 
-        if (newSub == null)
-            throw new Exception("Error al crear la suscripción.");
+        var newSub = subResponse.Model;
 
         // 2. Crear Factura
         var invoice = new InvoiceModel
@@ -76,15 +99,24 @@ public class SubscriptionService : ISubscriptionService
     {
         try
         {
+            string nowIso = DateTime.UtcNow.ToString("o");
+            Console.WriteLine($"Checking subscription for User: {userId} at {nowIso}");
+            
+            // Using explicit chaining to avoid "failed to parse logic tree" error in Postgrest
             var response = await _supabase.From<SubscriptionModel>()
-                .Where(x => x.OwnerId == userId && x.Status == "active" && x.EndDate > DateTime.UtcNow)
+                .Filter("owner_id", Constants.Operator.Equals, userId)
+                .Filter("status", Constants.Operator.Equals, "active")
+                .Filter("end_date", Constants.Operator.GreaterThan, nowIso)
                 .Get();
 
-            return response.Models.Any();
+            bool hasActive = response.Models.Any();
+            Console.WriteLine($"User {userId} has active subscription: {hasActive}. Found {response.Models.Count} records.");
+            
+            return hasActive;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error checking subscription: {ex.Message}");
+            Console.WriteLine($"Error checking subscription for {userId}: {ex.Message}");
             return false;
         }
     }
