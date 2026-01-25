@@ -8,6 +8,7 @@ public interface ISubscriptionService
 {
     Task<IEnumerable<SportResponse>> GetSportsAsync();
     Task<SubscriptionResponse> CreateSubscriptionAsync(SubscribeRequest request);
+    Task<bool> CheckSubscriptionStatusAsync(string userId);
 }
 
 public class SubscriptionService : ISubscriptionService
@@ -69,5 +70,22 @@ public class SubscriptionService : ISubscriptionService
              throw new Exception("Error al generar la factura.");
 
         return new SubscriptionResponse(newSub.Id, invResponse.Model.Id);
+    }
+
+    public async Task<bool> CheckSubscriptionStatusAsync(string userId)
+    {
+        try
+        {
+            var response = await _supabase.From<SubscriptionModel>()
+                .Where(x => x.OwnerId == userId && x.Status == "active" && x.EndDate > DateTime.UtcNow)
+                .Get();
+
+            return response.Models.Any();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking subscription: {ex.Message}");
+            return false;
+        }
     }
 }

@@ -92,15 +92,23 @@ export class AuthService {
         this.http.post<any>(`${this.apiUrl}/login`, { email, password })
       );
 
-      // Sincronizar el cliente de Supabase con el token recibido del backend
-      await this.supabaseService.getClient().auth.setSession({
-        access_token: response.token,
-        refresh_token: ''
-      });
+      console.log('Backend login response:', response);
 
-      await this.checkSession();
+      // Actualizamos la señal inmediatamente con los datos del backend
+      if (response && response.id) {
+        this.currentUser.set({
+          id: response.id,
+          email: response.email,
+          fullName: response.fullName
+        });
+      }
+
+      // Ya no usamos Supabase directamente en el frontend para auth,
+      // el backend maneja todo. Evitamos el error de sesión.
+      
       return { success: true };
     } catch (error: any) {
+      console.error('Login error:', error);
       return { success: false, error: error.error?.message || 'Credenciales inválidas' };
     } finally {
       this.loading.set(false);

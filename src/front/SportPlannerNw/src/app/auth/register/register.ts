@@ -60,7 +60,7 @@ export class Register {
     this.loading.set(false);
 
     if (result.success) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/onboarding/subscription']);
     } else {
       this.errorMessage.set(result.error || 'Error al crear la cuenta');
     }

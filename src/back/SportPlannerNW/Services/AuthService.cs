@@ -29,7 +29,8 @@ public class AuthService : IAuthService
             session.User.Id!,
             session.User.Email!,
             session.User.UserMetadata?["fullName"]?.ToString(),
-            session.AccessToken
+            session.AccessToken,
+            session.RefreshToken
         );
     }
 
@@ -49,7 +50,8 @@ public class AuthService : IAuthService
             session.User.Id!,
             session.User.Email!,
             fullName,
-            session.AccessToken
+            session.AccessToken,
+            session.RefreshToken
         );
     }
 }

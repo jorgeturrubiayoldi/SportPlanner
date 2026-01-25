@@ -42,4 +42,18 @@ public class SubscriptionController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    [HttpGet("status/{userId}")]
+    public async Task<IActionResult> GetSubscriptionStatus(string userId)
+    {
+        try
+        {
+            var isActive = await _subscriptionService.CheckSubscriptionStatusAsync(userId);
+            return Ok(isActive);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }

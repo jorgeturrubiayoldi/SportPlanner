@@ -20,15 +20,11 @@ export class SubscriptionService {
   async checkSubscriptionStatus(userId: string): Promise<boolean> {
     this.loading.set(true);
     try {
-      const { data, error } = await this.supabase.getClient()
-        .from('subscriptions')
-        .select('status, end_date')
-        .eq('owner_id', userId)
-        .eq('status', 'active')
-        .gt('end_date', new Date().toISOString())
-        .maybeSingle();
-
-      const isActive = !!data;
+      // Llamada directa al backend para evitar problemas de sesión con Supabase-JS en el frontend
+      const isActive = await firstValueFrom(
+        this.http.get<boolean>(`${this.apiUrl}/status/${userId}`)
+      );
+      
       this.hasActiveSubscription.set(isActive);
       return isActive;
     } catch (err) {

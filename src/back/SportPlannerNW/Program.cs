@@ -6,11 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// Supabase Configuration
+// Supabase Configuration - use ServiceKey to bypass RLS
 var supabaseUrl = builder.Configuration["Supabase:Url"];
-var supabaseKey = builder.Configuration["Supabase:Key"];
+var supabaseServiceKey = builder.Configuration["Supabase:ServiceKey"];
 builder.Services.AddScoped<Supabase.Client>(_ => 
-    new Supabase.Client(supabaseUrl!, supabaseKey, new Supabase.SupabaseOptions
+    new Supabase.Client(supabaseUrl!, supabaseServiceKey, new Supabase.SupabaseOptions
     {
         AutoRefreshToken = true,
         AutoConnectRealtime = true

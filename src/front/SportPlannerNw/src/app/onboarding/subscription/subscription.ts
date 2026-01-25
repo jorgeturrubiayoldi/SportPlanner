@@ -66,7 +66,8 @@ export class SubscriptionComponent implements OnInit {
       return;
     }
 
-    const user = await this.authService.getCurrentUser();
+    // Usar la señal currentUser en lugar de getCurrentUser() que hace llamada a Supabase
+    const user = this.authService.currentUser();
     if (!user) {
       this.router.navigate(['/auth/login']);
       return;
