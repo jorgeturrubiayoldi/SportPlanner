@@ -1,100 +1,15 @@
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro bloqueante */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
+/* Hemos migrado todos los estilos a clases de utilidad de Tailwind v4 en el HTML.
+   Este archivo se mantiene para cualquier ajuste fino específico que no cubra Tailwind,
+   pero de momento se deja limpio para seguir la filosofía de 'SportPlanner Design System'. */
 
-.modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 450px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  text-align: center;
-}
-
-h2 {
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-p {
-  color: #666;
-  margin-bottom: 2rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-  text-align: left;
-}
-
-label {
+:host {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: #444;
 }
 
-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
-  box-sizing: border-box; /* Importante para que el padding no rompa el ancho */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5); /* Ajuste sutil para el icono del calendario en temas oscuros */
 }
 
-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-}
-
-.actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 2rem;
-}
-
-button {
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-}
-
-.btn-cancel {
-  background: #f1f3f5;
-  color: #495057;
-}
-
-.btn-cancel:hover {
-  background: #e9ecef;
-}
-
-.btn-confirm {
-  background: #007bff;
-  color: white;
-  flex: 1;
-}
-
-.btn-confirm:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.btn-confirm:hover:not(:disabled) {
-  background: #0056b3;
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }
