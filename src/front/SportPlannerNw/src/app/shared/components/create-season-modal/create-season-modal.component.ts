@@ -18,6 +18,7 @@ export class CreateSeasonModalComponent {
   
   seasonName: string = '';
   startDate: string = new Date().toISOString().split('T')[0]; // Hoy por defecto
+  endDate: string = '';
   loading: boolean = false;
 
   private seasonService = inject(SeasonService);
@@ -31,7 +32,7 @@ export class CreateSeasonModalComponent {
       const user = await this.authService.getCurrentUser();
       if (!user) return;
 
-      await this.seasonService.createSeason(user.id, this.seasonName, this.startDate);
+      await this.seasonService.createSeason(user.id, this.seasonName, this.startDate, this.endDate);
       
       // Emitimos evento de éxito
       this.seasonCreated.emit();
@@ -45,7 +46,7 @@ export class CreateSeasonModalComponent {
   }
 
   isValid(): boolean {
-    return this.seasonName.trim().length > 0 && !!this.startDate;
+    return this.seasonName.trim().length > 0 && !!this.startDate && !!this.endDate;
   }
 
   async onLogout() {

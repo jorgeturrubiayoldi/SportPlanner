@@ -20,6 +20,7 @@ builder.Services.AddScoped<Supabase.Client>(_ =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISeasonService, SeasonService>();
+builder.Services.AddScoped<ITeamService, TeamService>();
 
 // CORS Configuration
 builder.Services.AddCors(options =>

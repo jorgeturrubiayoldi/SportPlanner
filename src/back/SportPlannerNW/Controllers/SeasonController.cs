@@ -23,6 +23,13 @@ public class SeasonController : ControllerBase
         return Ok(season);
     }
 
+    [HttpGet("all/{userId}")]
+    public async Task<IActionResult> GetAllSeasons(string userId)
+    {
+        var seasons = await _seasonService.GetSeasonsAsync(userId);
+        return Ok(seasons);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateSeason([FromBody] CreateSeasonRequest request)
     {

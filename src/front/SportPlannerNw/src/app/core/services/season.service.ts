@@ -28,6 +28,14 @@ export class SeasonService {
     }
   }
 
+  async getSeasons(userId: string): Promise<Season[]> {
+    try {
+      return await firstValueFrom(this.http.get<Season[]>(`${this.apiUrl}/all/${userId}`)) || [];
+    } catch (error) {
+      return [];
+    }
+  }
+
   async createSeason(userId: string, name: string, startDate: string, endDate?: string): Promise<Season> {
     return await firstValueFrom(this.http.post<Season>(this.apiUrl, {
       userId,

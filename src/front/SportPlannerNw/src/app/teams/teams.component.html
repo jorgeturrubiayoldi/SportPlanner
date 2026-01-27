@@ -1,0 +1,91 @@
+<div class="min-h-screen bg-background p-6 lg:p-10 space-y-8 animate-in fade-in duration-500">
+  
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="space-y-1">
+      <h1 class="text-3xl font-extrabold tracking-tight text-foreground">Equipos</h1>
+      <p class="text-muted-foreground text-sm">
+        Gestiona tus equipos para la temporada <span class="text-primary font-bold">{{ currentSeasonName() }}</span>
+      </p>
+    </div>
+    
+    <button 
+      (click)="openCreateModal()"
+      class="btn btn-primary shadow-lg shadow-primary/20 gap-2 px-6 py-2.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all duration-200">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      Nuevo Equipo
+    </button>
+  </div>
+
+  <!-- Content -->
+  @if (loading()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (i of [1,2,3]; track i) {
+        <div class="h-40 rounded-3xl bg-card/50 animate-pulse border border-border/50"></div>
+      }
+    </div>
+  } @else if (teams().length === 0) {
+    <div class="flex flex-col items-center justify-center py-20 text-center space-y-4 border-2 border-dashed border-border/50 rounded-3xl bg-card/30">
+      <div class="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-foreground">No hay equipos</h3>
+        <p class="text-muted-foreground text-sm max-w-xs mx-auto">
+          Crea tu primer equipo para empezar a planificar entrenamientos.
+        </p>
+      </div>
+      <button 
+        (click)="openCreateModal()"
+        class="text-primary font-bold text-sm hover:underline">
+        Crear equipo ahora
+      </button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      
+      @for (team of teams(); track team.id) {
+        <div class="group relative bg-card border border-border hover:border-primary/50 rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 overflow-hidden">
+          
+          <!-- Hover Gradient -->
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+          <div class="relative z-10 space-y-4">
+            <!-- Header items -->
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center font-black text-xl shadow-inner">
+                {{ team.name.charAt(0).toUpperCase() }}
+              </div>
+              <div class="px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-[10px] uppercase font-black tracking-widest">
+                {{ team.category }}
+              </div>
+            </div>
+
+            <!-- Info -->
+            <div>
+              <h3 class="text-xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors">
+                {{ team.name }}
+              </h3>
+              <p class="text-xs text-muted-foreground mt-1">
+                Generación {{ team.birthYear || 'N/A' }} {{ team.division ? '• Div ' + team.division : '' }}
+              </p>
+            </div>
+
+            <!-- Footer / Stats -->
+            <div class="pt-4 border-t border-border/50 flex items-center justify-between text-xs font-medium text-muted-foreground">
+              <span>24 jugadores</span>
+              <span>12 sesiones</span>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  }
+
+</div>
+
+<!-- Create Modal -->
+@if (showCreateModal()) {
+  <app-create-team-modal (teamCreated)="onTeamCreated()" (close)="closeCreateModal()"></app-create-team-modal>
+}

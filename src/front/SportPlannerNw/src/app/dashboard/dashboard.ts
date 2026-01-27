@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { ThemeService } from '../core/services/theme.service';
-import { SeasonService } from '../core/services/season.service';
+import { FormsModule } from '@angular/forms';
+import { SeasonService, Season } from '../core/services/season.service';
 import { CreateSeasonModalComponent } from '../shared/components/create-season-modal/create-season-modal.component';
 
 interface StatCard {
@@ -35,7 +36,7 @@ interface NavItem {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, CreateSeasonModalComponent],
+  imports: [CommonModule, RouterLink, CreateSeasonModalComponent, FormsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,25 +51,48 @@ export class Dashboard implements OnInit {
   protected sidebarCollapsed = signal(false);
   protected mobileMenuOpen = signal(false);
   protected showSeasonModal = signal(false); // Controla el modal
+  protected seasons = signal<any[]>([]);
+  protected selectedSeason = signal<any | null>(null);
 
   async ngOnInit() {
     // Verificar si el usuario tiene una temporada activa
     const user = this.authService.currentUser();
     if (user?.id) {
-      const activeSeason = await this.seasonService.getActiveSeason(user.id);
-      if (!activeSeason) {
-        console.warn('Dashboard: No active season found. Prompting creation.');
-        this.showSeasonModal.set(true);
-      } else {
-        console.log('Dashboard: Active season found:', activeSeason.name);
-      }
+      await this.loadSeasons(user.id);
     }
   }
 
-  onSeasonCreated() {
+  async loadSeasons(userId: string) {
+    const allSeasons = await this.seasonService.getSeasons(userId);
+    this.seasons.set(allSeasons);
+    
+    const active = allSeasons.find(s => s.isActive);
+    if (active) {
+      this.selectedSeason.set(active);
+      console.log('Dashboard: Active season found:', active.name);
+    } else if (allSeasons.length === 0) {
+      console.warn('Dashboard: No active season found. Prompting creation.');
+      this.showSeasonModal.set(true);
+    }
+  }
+
+  async onSeasonCreated() {
     this.showSeasonModal.set(false);
-    // Aquí podrías recargar datos del dashboard si dependieran de la temporada
-    console.log('Temporada creada con éxito. Acceso concedido.');
+    const user = this.authService.currentUser();
+    if (user?.id) {
+      await this.loadSeasons(user.id);
+    }
+    console.log('Temporada creada con éxito. Dashboard actualizado.');
+  }
+
+  onSeasonChange(event: any) {
+    const seasonId = event.target.value;
+    const season = this.seasons().find(s => s.id === seasonId);
+    if (season) {
+      this.selectedSeason.set(season);
+      console.log('Season changed to:', season.name);
+      // Aquí se podrían recargar los datos del dashboard filtrados por temporada
+    }
   }
 
   // Computed para obtener el nombre del usuario

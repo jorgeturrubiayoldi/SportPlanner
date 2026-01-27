@@ -7,6 +7,7 @@ namespace SportPlannerNW.Services;
 public interface ISeasonService
 {
     Task<SeasonResponse?> GetActiveSeasonAsync(string userId);
+    Task<IEnumerable<SeasonResponse>> GetSeasonsAsync(string userId);
     Task<SeasonResponse> CreateSeasonAsync(CreateSeasonRequest request);
 }
 
@@ -40,6 +41,26 @@ public class SeasonService : ISeasonService
         if (seasonResponse == null) return null;
 
         return new SeasonResponse(seasonResponse.Id, seasonResponse.Name, seasonResponse.IsActive);
+    }
+
+    public async Task<IEnumerable<SeasonResponse>> GetSeasonsAsync(string userId)
+    {
+        await _supabase.InitializeAsync();
+
+        // 1. Buscar la suscripción activa del usuario
+        var subResponse = await _supabase.From<SubscriptionModel>()
+            .Filter("owner_id", Constants.Operator.Equals, userId)
+            .Filter("status", Constants.Operator.Equals, "active")
+            .Single();
+
+        if (subResponse == null) return Enumerable.Empty<SeasonResponse>();
+
+        // 2. Buscar todas las temporadas de esa suscripción
+        var seasonsResponse = await _supabase.From<SeasonModel>()
+            .Filter("subscription_id", Constants.Operator.Equals, subResponse.Id)
+            .Get();
+
+        return seasonsResponse.Models.Select(s => new SeasonResponse(s.Id, s.Name, s.IsActive));
     }
 
     public async Task<SeasonResponse> CreateSeasonAsync(CreateSeasonRequest request)
