@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TeamService } from '../../../core/services/team.service';
-import { SeasonService } from '../../../core/services/season.service';
+import { SeasonService, Season } from '../../../core/services/season.service';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './create-team-modal.component.html',
-  styleUrls: ['./create-team-modal.component.scss'] // Optional if needed
+  styleUrls: ['./create-team-modal.component.scss']
 })
 export class CreateTeamModalComponent implements OnInit {
   @Output() teamCreated = new EventEmitter<void>();
@@ -25,7 +25,8 @@ export class CreateTeamModalComponent implements OnInit {
 
   // State
   loading: boolean = false;
-  activeSeasonId: string | null = null;
+  activeSeason: Season | null = null;
+  errorMsg: string = '';
 
   // Options
   categories: string[] = ['Prebenjamín', 'Benjamín', 'Alevín', 'Infantil', 'Cadete', 'Juvenil', 'Senior'];
@@ -45,85 +46,75 @@ export class CreateTeamModalComponent implements OnInit {
     for (let i = currentYear - 30; i <= currentYear; i++) {
       this.years.push(i);
     }
-    this.years.reverse(); // Newest first
+    this.years.reverse();
   }
 
   async loadActiveSeason() {
     const user = this.authService.currentUser();
     if (user) {
-      const season = await this.seasonService.getActiveSeason(user.id);
-      if (season) {
-        this.activeSeasonId = season.id;
-      }
+      this.activeSeason = await this.seasonService.getActiveSeason(user.id);
     }
   }
 
   async onCreate() {
-    if (!this.activeSeasonId) {
-      alert('No se encontró una temporada activa.');
+    if (!this.activeSeason) {
+      this.errorMsg = 'No se encontró una temporada activa.';
       return;
     }
 
-    this.loading = true;
-    try {
-      const user = this.authService.currentUser();
-      // Need subscription ID. Assuming user has one.
-      // Ideally AuthService or SubscriptionService provides this directly.
-      // But for now, we rely on the Backend to find the active subscription OR pass it in.
-      // Wait, Backend `CreateTeamRequest` needs `SubscriptionId`.
-      // I need to fetch the SubscriptionId first OR update the backend to find it by UserId?
-      // The current backend `CreateTeam` requires `SubscriptionId`.
-      // `TeamService` frontend doesn't have `getSubscriptionId`.
-      
-      // Checking `season.service.ts`... it fetches Active Subscription inside `CreateSeason`.
-      // BUT `TeamService` calls `http.post` directly passing the request DTO which has SubscriptionId.
-      
-      // I should modify `TeamService` to handle fetching subscription ID automatically?
-      // OR I can fetch the season, which has `SubscriptionId`? 
-      // `Season` interface has `id`, `name`, `isActive`. It DOES NOT expose `subscriptionId`.
-      
-      // Let's check `season.service.ts` `getActiveSeason` implementation in frontend.
-      // It returns `Season` interface (id, name, isActive).
-      
-      // PROBLEM: I don't have the `subscriptionId` in the frontend easily accessible unless I fetch the subscription.
-      // I'll inject `SubscriptionService` (if exists) or make a call to get it.
-      // `SubscriptionGuard` uses `SubscriptionService`.
-      
-      // Let's assume I can get the subscription from `getActiveSeason` if I update the model, 
-      // OR I fix the backend to accept UserId?
-      // The user wants "guarde segun lo establecido en el back".
-      
-      // I'll fetch the active subscription using the same logic as `SubscriptionGuard` or similar.
-      // Or simply: When loading `getActiveSeason`, I can assume `activeSeason` belongs to the active subscription.
-      // But I still need the ID.
-      
-      // I will update `Season` interface and `SeasonService` to return `subscriptionId` as well.
-      // This is the cleanest way.
-      
-      // WAIT, `createTeamAndAssignToSeason` calls `createTeam`.
-      
-      // I'll update `Season` interface locally to include `subscriptionId` if the API returns it.
-      // Let's check `SeasonResponse` in Backend... `public record SeasonResponse(string Id, string Name, bool IsActive);`.
-      // It DOES NOT return SubscriptionId.
-      
-      // Implementation Plan Adjustment: 
-      // I need to fetch the subscription ID. 
-      // I'll use `SubscriptionService.getSubscription(userId)` (checking if exists).
-      
-      // Let's check `core/services/subscription.service.ts` content? 
-      // I haven't viewed it yet. I'll assume I can find it or I'll implement a workaround.
-      
-      // Workaround: 
-      // Since I know `userId`, I can call an endpoint that returns my subscription?
-      // `SubscriptionService` likely has it.
+    if (!this.name || !this.category) {
+       this.errorMsg = 'Nombre y Categoría son obligatorios.';
+       return;
+    }
 
-      // Let's try to view `subscription.service.ts` quickly.
-    } catch (error) {
-      console.error(error);
+    this.loading = true;
+    this.errorMsg = '';
+
+    try {
+      const teamRequest = {
+        subscriptionId: this.activeSeason.subscriptionId,
+        name: this.name,
+        birthYear: this.birthYear || undefined, // undefined to send null if backend handles it
+        description: this.description
+      };
+
+      await this.teamService.createTeamAndAssignToSeason(
+        teamRequest,
+        this.activeSeason.id,
+        this.category,
+        this.division
+      );
+
+      this.teamCreated.emit();
+      this.close.emit();
+      
+    } catch (error: any) {
+      console.error('Error creando equipo:', error);
+      this.errorMsg = error.message || 'Error al crear el equipo.';
+    } finally {
+      this.loading = false;
     }
   }
 
   onClose() {
     this.close.emit();
+  }
+
+  // Helper to suggested category
+  onYearChange() {
+    if (!this.birthYear) return;
+    
+    // Simple logic based on age (Current Year - Birth Year)
+    // This could be moved to a utility or service
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - this.birthYear;
+
+    if (age <= 7) this.category = 'Prebenjamín';
+    else if (age <= 9) this.category = 'Benjamín';
+    else if (age <= 11) this.category = 'Alevín';
+    else if (age <= 13) this.category = 'Infantil';
+    else if (age <= 15) this.category = 'Cadete';
+    else if (age <= 18) this.category = 'Juvenil';
+    else this.category = 'Senior';
   }
 }

@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 export interface Season {
   id: string;
+  subscriptionId: string;
   name: string;
   isActive: boolean;
 }

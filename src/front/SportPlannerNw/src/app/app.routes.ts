@@ -7,6 +7,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./landing/landing').then((m) => m.Landing),
+    pathMatch: 'full'
   },
   {
     path: 'auth/login',
@@ -21,9 +22,38 @@ export const routes: Routes = [
     loadComponent: () => import('./onboarding/subscription/subscription').then((m) => m.SubscriptionComponent),
     canActivate: [authGuard, noSubscriptionGuard]
   },
+  // Authenticated Layout Wrapper
   {
-    path: 'dashboard',
-    loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard),
-    canActivate: [authGuard, subscriptionGuard]
+    path: '',
+    loadComponent: () => import('./core/layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    canActivate: [authGuard, subscriptionGuard],
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'equipos',
+        loadComponent: () => import('./teams/teams.component').then((m) => m.TeamsComponent),
+      },
+      // Placeholders for sidebar links to prevent 404s
+      {
+        path: 'planificaciones',
+        redirectTo: 'dashboard'
+      },
+      {
+        path: 'ejercicios',
+        redirectTo: 'dashboard'
+      },
+      {
+        path: 'marketplace',
+        redirectTo: 'dashboard'
+      }
+    ]
   },
+  // Fallback
+  {
+    path: '**',
+    redirectTo: ''
+  }
 ];

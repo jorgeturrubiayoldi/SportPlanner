@@ -40,7 +40,7 @@ public class SeasonService : ISeasonService
 
         if (seasonResponse == null) return null;
 
-        return new SeasonResponse(seasonResponse.Id, seasonResponse.Name, seasonResponse.IsActive);
+        return new SeasonResponse(seasonResponse.Id, seasonResponse.SubscriptionId, seasonResponse.Name, seasonResponse.IsActive);
     }
 
     public async Task<IEnumerable<SeasonResponse>> GetSeasonsAsync(string userId)
@@ -60,7 +60,7 @@ public class SeasonService : ISeasonService
             .Filter("subscription_id", Constants.Operator.Equals, subResponse.Id)
             .Get();
 
-        return seasonsResponse.Models.Select(s => new SeasonResponse(s.Id, s.Name, s.IsActive));
+        return seasonsResponse.Models.Select(s => new SeasonResponse(s.Id, s.SubscriptionId, s.Name, s.IsActive));
     }
 
     public async Task<SeasonResponse> CreateSeasonAsync(CreateSeasonRequest request)
@@ -91,6 +91,6 @@ public class SeasonService : ISeasonService
         if (response.Model == null)
             throw new Exception("Error al guardar la temporada.");
 
-        return new SeasonResponse(response.Model.Id, response.Model.Name, response.Model.IsActive);
+        return new SeasonResponse(response.Model.Id, response.Model.SubscriptionId, response.Model.Name, response.Model.IsActive);
     }
 }

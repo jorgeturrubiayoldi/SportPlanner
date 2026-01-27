@@ -10,9 +10,9 @@ builder.Services.AddOpenApi();
 var supabaseUrl = builder.Configuration["Supabase:Url"];
 var supabaseServiceKey = builder.Configuration["Supabase:ServiceKey"];
 builder.Services.AddScoped<Supabase.Client>(_ => 
-    new Supabase.Client(supabaseUrl!, supabaseServiceKey, new Supabase.SupabaseOptions
+    new Supabase.Client(supabaseUrl!, supabaseServiceKey!, new Supabase.SupabaseOptions
     {
-        AutoRefreshToken = false, // Importante para ServiceKey
+        AutoRefreshToken = false,
         AutoConnectRealtime = false
     }));
 

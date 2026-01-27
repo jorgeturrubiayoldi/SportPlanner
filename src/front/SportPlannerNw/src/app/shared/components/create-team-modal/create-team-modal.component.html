@@ -1,0 +1,124 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-300">
+  <div class="glass-card w-full max-w-lg p-0 relative overflow-hidden animate-in zoom-in-95 duration-300 rounded-3xl border border-border/50 shadow-2xl">
+    
+    <!-- Header -->
+    <div class="px-8 py-6 border-b border-border/50 bg-card/50">
+      <h2 class="text-2xl font-extrabold tracking-tight text-foreground">Nuevo Equipo</h2>
+      <p class="text-muted-foreground text-sm mt-1">
+        Crea un equipo para la temporada <span class="font-bold text-primary">{{ activeSeason?.name }}</span>
+      </p>
+    </div>
+
+    <!-- Body -->
+    <div class="p-8 space-y-6 bg-card/30">
+      
+      <!-- Error Message -->
+      @if (errorMsg) {
+        <div class="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium animate-in slide-in-from-top-2">
+          {{ errorMsg }}
+        </div>
+      }
+
+      <!-- Team Name -->
+      <div class="space-y-2">
+        <label for="teamName" class="text-sm font-bold text-foreground ml-1">Nombre del Equipo <span class="text-destructive">*</span></label>
+        <input 
+          type="text" 
+          id="teamName" 
+          [(ngModel)]="name" 
+          placeholder="Ej: Alevín A, Titanes, Águilas..."
+          class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+        >
+      </div>
+
+      <!-- Birth Year & Category -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <!-- Birth Year -->
+        <div class="space-y-2">
+          <label for="birthYear" class="text-sm font-bold text-foreground ml-1">Año de Nacimiento</label>
+          <select 
+            id="birthYear" 
+            [(ngModel)]="birthYear"
+            (change)="onYearChange()"
+            class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none"
+          >
+            <option [ngValue]="null" disabled selected>Selecciona año...</option>
+            @for (year of years; track year) {
+              <option [value]="year">{{ year }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Category -->
+        <div class="space-y-2">
+          <label for="category" class="text-sm font-bold text-foreground ml-1">Categoría <span class="text-destructive">*</span></label>
+          <select 
+            id="category" 
+            [(ngModel)]="category"
+            class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none"
+          >
+            <option value="" disabled selected>Selecciona categoría...</option>
+            @for (cat of categories; track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Division & Description -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Division -->
+        <div class="space-y-2 sm:col-span-1">
+          <label for="division" class="text-sm font-bold text-foreground ml-1">División <span class="text-xs font-normal text-muted-foreground">(Opcional)</span></label>
+          <input 
+            type="text" 
+            id="division" 
+            [(ngModel)]="division" 
+            placeholder="A, B, 1ª..."
+            class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+          >
+        </div>
+
+        <!-- Description -->
+        <div class="space-y-2 sm:col-span-2">
+          <label for="description" class="text-sm font-bold text-foreground ml-1">Descripción <span class="text-xs font-normal text-muted-foreground">(Opcional)</span></label>
+          <input 
+            type="text" 
+            id="description" 
+            [(ngModel)]="description" 
+            placeholder="Notas del equipo..."
+            class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+          >
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="px-8 py-6 border-t border-border/50 bg-card/50 flex flex-col sm:flex-row gap-3">
+      <button 
+        (click)="onClose()"
+        class="flex-1 px-6 py-3 rounded-xl font-bold text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all duration-200"
+      >
+        Cancelar
+      </button>
+      <button 
+        (click)="onCreate()" 
+        [disabled]="loading || !name || !category"
+        class="flex-[1.5] bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+      >
+        @if (loading) {
+          <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>Creando...</span>
+        } @else {
+          <span>Crear Equipo</span>
+        }
+      </button>
+    </div>
+
+  </div>
+</div>
