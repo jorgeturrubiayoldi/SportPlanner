@@ -7,14 +7,14 @@ namespace SportPlannerNW.Models.DTOs;
 public record CreateTeamRequest(
     string SubscriptionId, 
     string Name, 
-    int? BirthYear, 
+    string Gender,
     string? Description
 );
 
 public record UpdateTeamRequest(
     string Name, 
-    int? BirthYear, 
     string? Description,
+    string Gender,
     bool IsActive
 );
 
@@ -22,7 +22,7 @@ public record TeamResponse(
     string Id,
     string SubscriptionId,
     string Name,
-    int? BirthYear,
+    string Gender,
     string? Description,
     bool IsActive,
     DateTime CreatedAt,
@@ -61,8 +61,8 @@ public record TeamSeasonResponse(
 public record TeamWithSeasonResponse(
     string Id,
     string Name,
-    int? BirthYear,
     string? Description,
+    string Gender,
     bool IsActive,
     string Category,
     string? Division,

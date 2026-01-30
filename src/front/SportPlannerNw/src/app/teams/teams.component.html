@@ -3,9 +3,9 @@
   <!-- Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div class="space-y-1">
-      <h1 class="text-3xl font-extrabold tracking-tight text-foreground">Equipos</h1>
+      <h1 class="text-3xl font-extrabold tracking-tight text-foreground">{{ 'TEAMS.TITLE' | translate }}</h1>
       <p class="text-muted-foreground text-sm">
-        Gestiona tus equipos para la temporada <span class="text-primary font-bold">{{ currentSeasonName() }}</span>
+        {{ 'TEAMS.SUBTITLE' | translate }} <span class="text-primary font-bold">{{ currentSeasonName() }}</span>
       </p>
     </div>
     
@@ -13,7 +13,7 @@
       (click)="openCreateModal()"
       class="btn btn-primary shadow-lg shadow-primary/20 gap-2 px-6 py-2.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all duration-200">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-      Nuevo Equipo
+      {{ 'TEAMS.NEW_TEAM_BUTTON' | translate }}
     </button>
   </div>
 
@@ -30,15 +30,15 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </div>
       <div>
-        <h3 class="text-lg font-bold text-foreground">No hay equipos</h3>
+        <h3 class="text-lg font-bold text-foreground">{{ 'TEAMS.EMPTY_STATE.TITLE' | translate }}</h3>
         <p class="text-muted-foreground text-sm max-w-xs mx-auto">
-          Crea tu primer equipo para empezar a planificar entrenamientos.
+          {{ 'TEAMS.EMPTY_STATE.DESCRIPTION' | translate }}
         </p>
       </div>
       <button 
         (click)="openCreateModal()"
         class="text-primary font-bold text-sm hover:underline">
-        Crear equipo ahora
+        {{ 'TEAMS.EMPTY_STATE.BUTTON' | translate }}
       </button>
     </div>
   } @else {
@@ -67,14 +67,14 @@
                 {{ team.name }}
               </h3>
               <p class="text-xs text-muted-foreground mt-1">
-                Generación {{ team.birthYear || 'N/A' }} {{ team.division ? '• Div ' + team.division : '' }}
+                {{ team.division ? ('TEAMS.CARD.DIVISION_LABEL' | translate) + ' ' + team.division : '' }}
               </p>
             </div>
 
             <!-- Footer / Stats -->
             <div class="pt-4 border-t border-border/50 flex items-center justify-between text-xs font-medium text-muted-foreground">
-              <span>24 jugadores</span>
-              <span>12 sesiones</span>
+              <span>24 {{ 'TEAMS.CARD.PLAYERS' | translate }}</span>
+              <span>12 {{ 'TEAMS.CARD.SESSIONS' | translate }}</span>
             </div>
           </div>
         </div>

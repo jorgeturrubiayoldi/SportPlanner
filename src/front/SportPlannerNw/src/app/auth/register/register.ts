@@ -19,6 +19,7 @@ export class Register {
   protected form = this.fb.nonNullable.group({
     fullName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
+    language: ['es', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', [Validators.required]]
   }, {
@@ -54,8 +55,8 @@ export class Register {
     this.loading.set(true);
     this.errorMessage.set(null);
 
-    const { fullName, email, password: pwd } = this.form.getRawValue();
-    const result = await this.authService.signUp(email, pwd, fullName);
+    const { fullName, email, password: pwd, language } = this.form.getRawValue();
+    const result = await this.authService.signUp(email, pwd, fullName, language);
 
     this.loading.set(false);
 

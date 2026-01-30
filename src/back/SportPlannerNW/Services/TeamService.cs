@@ -41,7 +41,7 @@ public class TeamService : ITeamService
             t.Id,
             t.SubscriptionId,
             t.Name,
-            t.BirthYear,
+            t.Gender,
             t.Description,
             t.IsActive,
             t.CreatedAt,
@@ -76,8 +76,8 @@ public class TeamService : ITeamService
                 results.Add(new TeamWithSeasonResponse(
                     team.Id,
                     team.Name,
-                    team.BirthYear,
                     team.Description,
+                    team.Gender,
                     team.IsActive,
                     ts.Category,
                     ts.Division,
@@ -104,7 +104,7 @@ public class TeamService : ITeamService
             team.Id,
             team.SubscriptionId,
             team.Name,
-            team.BirthYear,
+            team.Gender,
             team.Description,
             team.IsActive,
             team.CreatedAt,
@@ -120,7 +120,7 @@ public class TeamService : ITeamService
         {
             SubscriptionId = request.SubscriptionId,
             Name = request.Name,
-            BirthYear = request.BirthYear,
+            Gender = request.Gender,
             Description = request.Description,
             IsActive = true
         };
@@ -134,7 +134,7 @@ public class TeamService : ITeamService
             response.Model.Id,
             response.Model.SubscriptionId,
             response.Model.Name,
-            response.Model.BirthYear,
+            response.Model.Gender,
             response.Model.Description,
             response.Model.IsActive,
             response.Model.CreatedAt,
@@ -154,8 +154,8 @@ public class TeamService : ITeamService
             throw new Exception("Equipo no encontrado.");
 
         team.Name = request.Name;
-        team.BirthYear = request.BirthYear;
         team.Description = request.Description;
+        team.Gender = request.Gender;
         team.IsActive = request.IsActive;
 
         var response = await _supabase.From<TeamModel>().Update(team);
@@ -167,7 +167,7 @@ public class TeamService : ITeamService
             response.Model.Id,
             response.Model.SubscriptionId,
             response.Model.Name,
-            response.Model.BirthYear,
+            response.Model.Gender,
             response.Model.Description,
             response.Model.IsActive,
             response.Model.CreatedAt,

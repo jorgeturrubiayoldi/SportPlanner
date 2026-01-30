@@ -3,9 +3,9 @@
     
     <!-- Header -->
     <div class="px-8 py-6 border-b border-border/50 bg-card/50">
-      <h2 class="text-2xl font-extrabold tracking-tight text-foreground">Nuevo Equipo</h2>
+      <h2 class="text-2xl font-extrabold tracking-tight text-foreground">{{ 'TEAMS.CREATE_MODAL.TITLE' | translate }}</h2>
       <p class="text-muted-foreground text-sm mt-1">
-        Crea un equipo para la temporada <span class="font-bold text-primary">{{ activeSeason?.name }}</span>
+        {{ 'TEAMS.CREATE_MODAL.SUBTITLE' | translate }} <span class="font-bold text-primary">{{ activeSeason?.name }}</span>
       </p>
     </div>
 
@@ -15,85 +15,80 @@
       <!-- Error Message -->
       @if (errorMsg) {
         <div class="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium animate-in slide-in-from-top-2">
-          {{ errorMsg }}
+          {{ errorMsg | translate }}
         </div>
       }
 
       <!-- Team Name -->
       <div class="space-y-2">
-        <label for="teamName" class="text-sm font-bold text-foreground ml-1">Nombre del Equipo <span class="text-destructive">*</span></label>
+        <label for="teamName" class="text-sm font-bold text-foreground ml-1">{{ 'TEAMS.CREATE_MODAL.TEAM_NAME' | translate }} <span class="text-destructive">*</span></label>
         <input 
           type="text" 
           id="teamName" 
           [(ngModel)]="name" 
-          placeholder="Ej: Alevín A, Titanes, Águilas..."
+          [placeholder]="'TEAMS.CREATE_MODAL.TEAM_NAME_PLACEHOLDER' | translate"
           class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
         >
       </div>
 
-      <!-- Birth Year & Category -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        
-        <!-- Birth Year -->
-        <div class="space-y-2">
-          <label for="birthYear" class="text-sm font-bold text-foreground ml-1">Año de Nacimiento</label>
+      <!-- Category -->
+      <div class="space-y-2">
+        <label for="category" class="text-sm font-bold text-foreground ml-1">{{ 'TEAMS.CREATE_MODAL.CATEGORY' | translate }} <span class="text-destructive">*</span></label>
+        @if (loadingCategories) {
+          <div class="w-full bg-background border border-border rounded-xl px-4 py-3 text-muted-foreground">
+            {{ 'TEAMS.CREATE_MODAL.LOADING_CATEGORIES' | translate }}
+          </div>
+        } @else {
           <select 
-            id="birthYear" 
-            [(ngModel)]="birthYear"
-            (change)="onYearChange()"
+            id="category" 
+            [(ngModel)]="selectedCategory"
             class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none"
           >
-            <option [ngValue]="null" disabled selected>Selecciona año...</option>
-            @for (year of years; track year) {
-              <option [value]="year">{{ year }}</option>
+            <option [ngValue]="null" disabled selected>{{ 'TEAMS.CREATE_MODAL.SELECT_CATEGORY' | translate }}</option>
+            @for (cat of categories; track cat.id) {
+              <option [ngValue]="cat">{{ cat.name }}</option>
             }
           </select>
-        </div>
+        }
+      </div>
 
-        <!-- Category -->
-        <div class="space-y-2">
-          <label for="category" class="text-sm font-bold text-foreground ml-1">Categoría <span class="text-destructive">*</span></label>
-          @if (loadingCategories) {
-            <div class="w-full bg-background border border-border rounded-xl px-4 py-3 text-muted-foreground">
-              Cargando categorías...
-            </div>
-          } @else {
-            <select 
-              id="category" 
-              [(ngModel)]="selectedCategory"
-              class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none"
-            >
-              <option [ngValue]="null" disabled selected>Selecciona categoría...</option>
-              @for (cat of categories; track cat.id) {
-                <option [ngValue]="cat">{{ cat.name }}</option>
-              }
-            </select>
+      <!-- Gender -->
+      <div class="space-y-2">
+        <label for="gender" class="text-sm font-bold text-foreground ml-1">{{ 'TEAMS.CREATE_MODAL.GENDER' | translate }} <span class="text-destructive">*</span></label>
+        <select 
+          id="gender" 
+          [(ngModel)]="selectedGender"
+          class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none"
+        >
+          <option [ngValue]="null" disabled selected>{{ 'TEAMS.CREATE_MODAL.SELECT_GENDER' | translate }}</option>
+          @for (option of genderOptions; track option.value) {
+            <option [value]="option.value">{{ option.label | translate }}</option>
           }
-        </div>
+        </select>
       </div>
 
       <!-- Division & Description -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <!-- Division -->
         <div class="space-y-2 sm:col-span-1">
-          <label for="division" class="text-sm font-bold text-foreground ml-1">División <span class="text-xs font-normal text-muted-foreground">(Opcional)</span></label>
+          <label for="division" class="text-sm font-bold text-foreground ml-1">{{ 'TEAMS.CREATE_MODAL.DIVISION' | translate }} <span class="text-xs font-normal text-muted-foreground">{{ 'COMMON.OPTIONAL' | translate }}</span></label>
           <input 
             type="text" 
             id="division" 
             [(ngModel)]="division" 
-            placeholder="A, B, 1ª..."
+            [placeholder]="'TEAMS.CREATE_MODAL.DIVISION_PLACEHOLDER' | translate"
             class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
           >
         </div>
 
         <!-- Description -->
         <div class="space-y-2 sm:col-span-2">
-          <label for="description" class="text-sm font-bold text-foreground ml-1">Descripción <span class="text-xs font-normal text-muted-foreground">(Opcional)</span></label>
+          <label for="description" class="text-sm font-bold text-foreground ml-1">{{ 'TEAMS.CREATE_MODAL.DESCRIPTION' | translate }} <span class="text-xs font-normal text-muted-foreground">{{ 'COMMON.OPTIONAL' | translate }}</span></label>
           <input 
             type="text" 
             id="description" 
             [(ngModel)]="description" 
-            placeholder="Notas del equipo..."
+            [placeholder]="'TEAMS.CREATE_MODAL.DESCRIPTION_PLACEHOLDER' | translate"
             class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
           >
         </div>
@@ -107,11 +102,11 @@
         (click)="onClose()"
         class="flex-1 px-6 py-3 rounded-xl font-bold text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all duration-200"
       >
-        Cancelar
+        {{ 'TEAMS.CREATE_MODAL.CANCEL_BUTTON' | translate }}
       </button>
       <button 
         (click)="onCreate()" 
-        [disabled]="loading || !name || !selectedCategory"
+        [disabled]="loading || !name || !selectedCategory || !selectedGender"
         class="flex-[1.5] bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
       >
         @if (loading) {
@@ -119,9 +114,9 @@
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span>Creando...</span>
+          <span>{{ 'TEAMS.CREATE_MODAL.CREATING_BUTTON' | translate }}</span>
         } @else {
-          <span>Crear Equipo</span>
+          <span>{{ 'TEAMS.CREATE_MODAL.CREATE_BUTTON' | translate }}</span>
         }
       </button>
     </div>

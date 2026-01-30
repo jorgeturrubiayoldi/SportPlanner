@@ -5,4 +5,5 @@ export interface User {
   phone?: string;
   avatarUrl?: string;
   createdAt?: string;
+  language?: string;
 }

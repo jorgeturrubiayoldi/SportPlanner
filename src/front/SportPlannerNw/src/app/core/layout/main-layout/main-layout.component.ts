@@ -4,8 +4,10 @@ import { Router, RouterLink, RouterOutlet, RouterLinkActive, NavigationEnd } fro
 import { AuthService } from '../../services/auth.service';
 import { ThemeService } from '../../services/theme.service';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { SeasonService, Season } from '../../services/season.service';
 import { CreateSeasonModalComponent } from '../../../shared/components/create-season-modal/create-season-modal.component';
+import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
 
 interface NavItem {
   label: string;
@@ -16,7 +18,7 @@ interface NavItem {
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterLinkActive, CreateSeasonModalComponent, FormsModule],
+  imports: [CommonModule, RouterLink, RouterOutlet, RouterLinkActive, CreateSeasonModalComponent, FormsModule, TranslateModule, LanguageSwitcherComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,11 +38,11 @@ export class MainLayoutComponent implements OnInit {
 
   // Items de navegación
   protected navItems = signal<NavItem[]>([
-    { label: 'Dashboard', icon: 'grid', route: '/dashboard' },
-    { label: 'Planificaciones', icon: 'calendar', route: '/planificaciones' },
-    { label: 'Equipos', icon: 'users', route: '/equipos' },
-    { label: 'Ejercicios', icon: 'activity', route: '/ejercicios' },
-    { label: 'Marketplace', icon: 'shopping-bag', route: '/marketplace' }
+    { label: 'MENU.DASHBOARD', icon: 'grid', route: '/dashboard' },
+    { label: 'MENU.PLANNING', icon: 'calendar', route: '/planificaciones' },
+    { label: 'MENU.TEAMS', icon: 'users', route: '/equipos' },
+    { label: 'MENU.EXERCISES', icon: 'activity', route: '/ejercicios' },
+    { label: 'MENU.MARKETPLACE', icon: 'shopping-bag', route: '/marketplace' }
   ]);
 
   protected userName = computed(() => {

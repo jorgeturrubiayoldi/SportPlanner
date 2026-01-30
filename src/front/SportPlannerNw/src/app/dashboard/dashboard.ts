@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../core/services/notification.service';
 import { Router } from '@angular/router';
 
 interface StatCard {
@@ -31,6 +32,7 @@ interface RecentPlan {
 })
 export class Dashboard {
   private router = inject(Router);
+  protected notificationService = inject(NotificationService);
 
   // Datos de estadísticas (mock data)
   protected stats = signal<StatCard[]>([

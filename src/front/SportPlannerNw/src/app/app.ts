@@ -1,12 +1,21 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ToastContainerComponent } from './shared/components/toast-container/toast-container.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastContainerComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
   protected readonly title = signal('SportPlannerNw');
+  private translate = inject(TranslateService);
+
+  constructor() {
+    this.translate.addLangs(['es', 'fr', 'en']);
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
+  }
 }

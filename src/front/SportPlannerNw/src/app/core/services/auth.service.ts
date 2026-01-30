@@ -5,6 +5,7 @@ import { SupabaseService } from './supabase.service';
 import { User } from '../models/user.model';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,9 @@ import { firstValueFrom } from 'rxjs';
 export class AuthService {
   private supabaseService = inject(SupabaseService);
   private router = inject(Router);
+
   private http = inject(HttpClient);
+  private translateService = inject(TranslateService);
   private apiUrl = `${environment.apiUrl}/Auth`;
 
   currentUser = signal<User | null>(null);
@@ -41,32 +44,42 @@ export class AuthService {
         .select('*')
         .eq('id', authUser.id)
         .single();
-
+      
       if (profile) {
         this.currentUser.set({
           id: authUser.id,
           email: authUser.email!,
           fullName: profile.full_name || authUser.user_metadata?.['fullName'],
           avatarUrl: profile.avatar_url,
-          phone: profile.phone
+          phone: profile.phone,
+          language: profile.language
         });
+        
+        if (profile.language) {
+          this.translateService.use(profile.language);
+        }
       } else {
         this.currentUser.set({
           id: authUser.id,
           email: authUser.email!,
           fullName: authUser.user_metadata?.['fullName']
         });
+        
+        // If no profile, but authUser has language metadata, use it
+        if (authUser.user_metadata?.['language']) {
+          this.translateService.use(authUser.user_metadata['language']);
+        }
       }
     } catch (err) {
       console.error('Error loading profile:', err);
     }
   }
 
-  async signUp(email: string, password: string, fullName: string): Promise<{ success: boolean; error?: string }> {
+  async signUp(email: string, password: string, fullName: string, language: string): Promise<{ success: boolean; error?: string }> {
     this.loading.set(true);
     try {
       const response = await firstValueFrom(
-        this.http.post<any>(`${this.apiUrl}/register`, { email, password, fullName })
+        this.http.post<any>(`${this.apiUrl}/register`, { email, password, fullName, language })
       );
 
       // El registro en el back crea el usuario en Supabase, así que iniciamos sesión
@@ -92,15 +105,18 @@ export class AuthService {
         this.http.post<any>(`${this.apiUrl}/login`, { email, password })
       );
 
-      console.log('Backend login response:', response);
-
       // Actualizamos la señal inmediatamente con los datos del backend
       if (response && response.id) {
         this.currentUser.set({
           id: response.id,
           email: response.email,
-          fullName: response.fullName
+          fullName: response.fullName,
+          language: response.language
         });
+
+        if (response.language) {
+          this.translateService.use(response.language);
+        }
 
         // Sincronizar sesión con el cliente de Supabase para que los Guards funcionen
         // El backend nos devuelve el access_token y refresh_token

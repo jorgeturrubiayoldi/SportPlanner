@@ -1,0 +1,59 @@
+{
+  "COMMON": {
+    "WELCOME": "Bienvenue sur SportPlanner",
+    "LANGUAGE": "Langue",
+    "OPTIONAL": "(Optionnel)"
+  },
+  "MENU": {
+    "DASHBOARD": "Tableau de bord",
+    "TEAMS": "Équipes",
+    "PLAYERS": "Joueurs",
+    "PLANNING": "Planifications",
+    "EXERCISES": "Exercices",
+    "MARKETPLACE": "Marché"
+  }
+  ,
+  "TEAMS": {
+    "TITLE": "Équipes",
+    "SUBTITLE": "Gérez vos équipes pour la saison",
+    "NEW_TEAM_BUTTON": "Nouvelle Équipe",
+    "EMPTY_STATE": {
+      "TITLE": "Aucune équipe",
+      "DESCRIPTION": "Créez votre première équipe pour commencer à planifier.",
+      "BUTTON": "Créer une équipe maintenant"
+    },
+    "CARD": {
+      "DIVISION_LABEL": "Division",
+      "PLAYERS": "joueurs",
+      "SESSIONS": "séances"
+    },
+    "CREATE_MODAL": {
+      "TITLE": "Nouvelle Équipe",
+      "SUBTITLE": "Créer une équipe pour la saison",
+      "TEAM_NAME": "Nom de l'équipe",
+      "TEAM_NAME_PLACEHOLDER": "Ex: Junior A, Titans, Aigles...",
+      "CATEGORY": "Catégorie",
+      "LOADING_CATEGORIES": "Chargement des catégories...",
+      "SELECT_CATEGORY": "Sélectionner une catégorie...",
+      "GENDER": "Genre",
+      "SELECT_GENDER": "Sélectionner le genre...",
+      "DIVISION": "Division",
+      "DIVISION_PLACEHOLDER": "A, B, 1ère...",
+      "DESCRIPTION": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Notes de l'équipe...",
+      "CREATE_BUTTON": "Créer l'équipe",
+      "CREATING_BUTTON": "Création...",
+      "CANCEL_BUTTON": "Annuler"
+    },
+    "GENDER": {
+      "MALE": "Masculin",
+      "FEMALE": "Féminin",
+      "MIXED": "Mixte"
+    },
+    "ERRORS": {
+      "NO_ACTIVE_SEASON": "Aucune saison active trouvée.",
+      "REQUIRED_FIELDS": "Nom, Genre et Catégorie sont requis.",
+      "CREATE_ERROR": "Erreur lors de la création de l'équipe."
+    }
+  }
+}

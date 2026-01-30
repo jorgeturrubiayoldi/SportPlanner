@@ -3,10 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 
+export type TeamGender = 'Male' | 'Female' | 'Mixed';
+
 export interface Team {
   id: string;
   subscriptionId: string;
   name: string;
+  gender: TeamGender;
   birthYear?: number;
   description?: string;
   isActive: boolean;
@@ -17,6 +20,7 @@ export interface Team {
 export interface TeamWithSeason {
   id: string;
   name: string;
+  gender: TeamGender;
   birthYear?: number;
   description?: string;
   isActive: boolean;
@@ -29,6 +33,7 @@ export interface TeamWithSeason {
 export interface CreateTeamRequest {
   subscriptionId: string;
   name: string;
+  gender: TeamGender;
   birthYear?: number;
   description?: string;
 }

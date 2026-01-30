@@ -30,12 +30,12 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
     {
         try
         {
-            var result = await _authService.RegisterAsync(request.FullName, request.Email, request.Password);
-            return Ok(result);
+            var response = await _authService.RegisterAsync(request.FullName, request.Email, request.Password, request.Language);
+            return Ok(response);
         }
         catch (Exception ex)
         {

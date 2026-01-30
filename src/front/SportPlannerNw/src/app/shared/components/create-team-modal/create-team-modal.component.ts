@@ -1,7 +1,8 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TeamService } from '../../../core/services/team.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { TeamService, TeamGender } from '../../../core/services/team.service';
 import { SeasonService, Season } from '../../../core/services/season.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CategoryService, Category } from '../../../core/services/category.service';
@@ -10,76 +11,65 @@ import { SubscriptionService } from '../../../core/services/subscription.service
 @Component({
   selector: 'app-create-team-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './create-team-modal.component.html',
-  styleUrls: ['./create-team-modal.component.scss']
+  styleUrl: './create-team-modal.component.scss'
 })
 export class CreateTeamModalComponent implements OnInit {
   @Output() teamCreated = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
 
   // Form Data
-  name: string = '';
-  birthYear: number | null = null;
-  description: string = '';
+  name = '';
+  description = '';
   selectedCategory: Category | null = null;
-  division: string = '';
+  division = '';
+  selectedGender: TeamGender | null = null;
 
   // State
-  loading: boolean = false;
-  loadingCategories: boolean = false;
+  loading = false;
+  loadingCategories = false;
   activeSeason: Season | null = null;
-  errorMsg: string = '';
+  errorMsg = '';
 
   // Options
   categories: Category[] = [];
-  years: number[] = [];
+  genderOptions: { value: TeamGender, label: string }[] = [
+    { value: 'Male', label: 'TEAMS.GENDER.MALE' },
+    { value: 'Female', label: 'TEAMS.GENDER.FEMALE' },
+    { value: 'Mixed', label: 'TEAMS.GENDER.MIXED' }
+  ];
 
   private teamService = inject(TeamService);
   private seasonService = inject(SeasonService);
   private authService = inject(AuthService);
   private categoryService = inject(CategoryService);
   private subscriptionService = inject(SubscriptionService);
-  private cdr = inject(import('@angular/core').ChangeDetectorRef);
+  private cdr = inject(ChangeDetectorRef);
 
   async ngOnInit() {
-    console.log('Modal Init');
-    this.generateYears();
     await this.loadActiveSeason();
     await this.loadCategories();
-  }
-
-  generateYears() {
-    const currentYear = new Date().getFullYear();
-    for (let i = currentYear - 30; i <= currentYear; i++) {
-      this.years.push(i);
-    }
-    this.years.reverse();
   }
 
   async loadActiveSeason() {
     const user = this.authService.currentUser();
     if (user) {
       this.activeSeason = await this.seasonService.getActiveSeason(user.id);
-      console.log('Active Season:', this.activeSeason);
     }
   }
 
   async loadCategories() {
-    console.log('Loading Categories...');
     const user = this.authService.currentUser();
     if (!user) return;
 
     this.loadingCategories = true;
     try {
-      // Obtener la suscripción activa para saber el sportId
       const subscription = await this.subscriptionService.getActiveSubscription(user.id);
-      console.log('Subscription:', subscription);
       
       if (subscription) {
         this.categories = await this.categoryService.getCategoriesBySport(subscription.sportId);
-        console.log('Categories Loaded:', this.categories);
-        this.cdr.detectChanges(); // Forzar actualización de vista
+        this.cdr.detectChanges();
       }
     } catch (error) {
       console.error('Error loading categories:', error);
@@ -91,12 +81,12 @@ export class CreateTeamModalComponent implements OnInit {
 
   async onCreate() {
     if (!this.activeSeason) {
-      this.errorMsg = 'No se encontró una temporada activa.';
+      this.errorMsg = 'TEAMS.ERRORS.NO_ACTIVE_SEASON';
       return;
     }
 
-    if (!this.name || !this.selectedCategory) {
-       this.errorMsg = 'Nombre y Categoría son obligatorios.';
+    if (!this.name || !this.selectedCategory || !this.selectedGender) {
+       this.errorMsg = 'TEAMS.ERRORS.REQUIRED_FIELDS';
        return;
     }
 
@@ -104,17 +94,17 @@ export class CreateTeamModalComponent implements OnInit {
     this.errorMsg = '';
 
     try {
-      const teamRequest = {
-        subscriptionId: this.activeSeason.subscriptionId,
-        name: this.name,
-        birthYear: this.birthYear || undefined,
-        description: this.description
-      };
+        const teamRequest = {
+          subscriptionId: this.activeSeason.subscriptionId,
+          name: this.name,
+          gender: this.selectedGender!,
+          description: this.description
+        };
 
       await this.teamService.createTeamAndAssignToSeason(
         teamRequest,
         this.activeSeason.id,
-        this.selectedCategory.name, // Por ahora usamos el nombre, después migraremos a categoryId
+        this.selectedCategory.name,
         this.division
       );
 
@@ -123,7 +113,7 @@ export class CreateTeamModalComponent implements OnInit {
       
     } catch (error: any) {
       console.error('Error creando equipo:', error);
-      this.errorMsg = error.message || 'Error al crear el equipo.';
+      this.errorMsg = 'TEAMS.ERRORS.CREATE_ERROR';
     } finally {
       this.loading = false;
     }
@@ -131,15 +121,5 @@ export class CreateTeamModalComponent implements OnInit {
 
   onClose() {
     this.close.emit();
-  }
-
-  // Helper to suggest category based on birth year
-  onYearChange() {
-    if (!this.birthYear || this.categories.length === 0) return;
-    
-    const suggested = this.categoryService.suggestCategory(this.birthYear, this.categories);
-    if (suggested) {
-      this.selectedCategory = suggested;
-    }
   }
 }
