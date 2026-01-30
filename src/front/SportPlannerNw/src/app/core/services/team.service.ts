@@ -45,6 +45,14 @@ export interface CreateTeamSeasonRequest {
   division?: string;
 }
 
+export interface TeamSeason {
+  id: string;
+  teamId: string;
+  seasonId: string;
+  category: string;
+  division?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -68,6 +76,24 @@ export class TeamService {
       return await firstValueFrom(this.http.get<TeamWithSeason[]>(`${this.apiUrl}/season/${seasonId}`)) || [];
     } catch (error) {
       console.error('Error fetching teams by season:', error);
+      return [];
+    }
+  }
+
+  async getTeamById(teamId: string): Promise<Team | undefined> {
+    try {
+      return await firstValueFrom(this.http.get<Team>(`${this.apiUrl}/${teamId}`));
+    } catch (error) {
+      console.error('Error fetching team by id:', error);
+      return undefined;
+    }
+  }
+  
+  async getTeamSeasons(teamId: string): Promise<TeamSeason[]> {
+    try {
+      return await firstValueFrom(this.http.get<TeamSeason[]>(`${this.apiUrl}/${teamId}/seasons`)) || [];
+    } catch (error) {
+      console.error('Error fetching team seasons:', error);
       return [];
     }
   }

@@ -25,7 +25,36 @@
     "CARD": {
       "DIVISION_LABEL": "División",
       "PLAYERS": "jugadores",
-      "SESSIONS": "sesiones"
+      "SESSIONS": "sesiones",
+      "MANAGE_BUTTON": "Gestionar Equipo"
+    },
+    "BACK_TO_LIST": "Volver a la lista",
+    "MANAGEMENT": {
+      "TITLE": "Gestión de Equipo",
+      "PANEL_TITLE": "Panel de Gestión",
+      "TABS": {
+        "PLAYERS": "Jugadores",
+        "COACHES": "Entrenadores",
+        "PLANNING": "Planificación",
+        "CALENDAR": "Calendario"
+      },
+      "PLAYERS": {
+        "TITLE": "Jugadores",
+        "ADD": "Añadir Jugador",
+        "EMPTY": "No hay jugadores asignados a este equipo."
+      },
+      "COACHES": {
+        "TITLE": "Entrenadores",
+        "EMPTY": "No hay entrenadores asignados."
+      },
+      "PLANNING": {
+        "TITLE": "Planificación",
+        "EMPTY": "No hay planificaciones creadas."
+      },
+      "CALENDAR": {
+        "TITLE": "Calendario",
+        "EMPTY": "No hay eventos en el calendario."
+      }
     },
     "CREATE_MODAL": {
       "TITLE": "Nuevo Equipo",

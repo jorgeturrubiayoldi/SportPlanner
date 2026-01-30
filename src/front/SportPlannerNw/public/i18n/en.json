@@ -25,7 +25,36 @@
     "CARD": {
       "DIVISION_LABEL": "Division",
       "PLAYERS": "players",
-      "SESSIONS": "sessions"
+      "SESSIONS": "sessions",
+      "MANAGE_BUTTON": "Manage Team"
+    },
+    "BACK_TO_LIST": "Back to list",
+    "MANAGEMENT": {
+      "TITLE": "Team Management",
+      "PANEL_TITLE": "Management Panel",
+      "TABS": {
+        "PLAYERS": "Players",
+        "COACHES": "Coaches",
+        "PLANNING": "Planning",
+        "CALENDAR": "Calendar"
+      },
+      "PLAYERS": {
+        "TITLE": "Players",
+        "ADD": "Add Player",
+        "EMPTY": "No players assigned to this team."
+      },
+      "COACHES": {
+        "TITLE": "Coaches",
+        "EMPTY": "No coaches assigned."
+      },
+      "PLANNING": {
+        "TITLE": "Planning",
+        "EMPTY": "No planning created."
+      },
+      "CALENDAR": {
+        "TITLE": "Calendar",
+        "EMPTY": "No events in current calendar."
+      }
     },
     "CREATE_MODAL": {
       "TITLE": "New Team",

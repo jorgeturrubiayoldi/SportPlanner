@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { TeamService, TeamWithSeason } from '../core/services/team.service';
@@ -9,7 +10,7 @@ import { CreateTeamModalComponent } from '../shared/components/create-team-modal
 @Component({
   selector: 'app-teams',
   standalone: true,
-  imports: [CommonModule, CreateTeamModalComponent, TranslateModule],
+  imports: [CommonModule, RouterModule, CreateTeamModalComponent, TranslateModule],
   templateUrl: './teams.component.html',
   styleUrl: './teams.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

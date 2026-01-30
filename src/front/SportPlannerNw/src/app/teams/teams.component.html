@@ -72,9 +72,17 @@
             </div>
 
             <!-- Footer / Stats -->
-            <div class="pt-4 border-t border-border/50 flex items-center justify-between text-xs font-medium text-muted-foreground">
-              <span>24 {{ 'TEAMS.CARD.PLAYERS' | translate }}</span>
-              <span>12 {{ 'TEAMS.CARD.SESSIONS' | translate }}</span>
+            <div class="pt-4 border-t border-border/50 flex flex-col gap-4">
+              <div class="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                <span>24 {{ 'TEAMS.CARD.PLAYERS' | translate }}</span>
+                <span>12 {{ 'TEAMS.CARD.SESSIONS' | translate }}</span>
+              </div>
+              
+              <button 
+                [routerLink]="['/teams', team.id, 'manage']"
+                class="w-full btn btn-sm btn-secondary font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                {{ 'TEAMS.CARD.MANAGE_BUTTON' | translate }}
+              </button>
             </div>
           </div>
         </div>
