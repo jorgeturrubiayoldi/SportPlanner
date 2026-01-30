@@ -90,6 +90,11 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
+    caret-color: transparent; /* Hide blinking cursor by default */
+  }
+
+  input, textarea, [contenteditable="true"] {
+    caret-color: auto; /* Show blinking cursor for editable elements */
   }
 }
 
