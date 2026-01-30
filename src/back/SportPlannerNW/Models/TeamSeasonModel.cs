@@ -10,6 +10,7 @@ public class TeamSeasonModel : BaseModel
     [Column("team_id")] public string TeamId { get; set; } = null!;
     [Column("season_id")] public string SeasonId { get; set; } = null!;
     [Column("category")] public string Category { get; set; } = null!;
+    [Column("category_id")] public string? CategoryId { get; set; }
     [Column("division")] public string? Division { get; set; }
     [Column("is_active")] public bool IsActive { get; set; }
     [Column("created_at")] public DateTime CreatedAt { get; set; }

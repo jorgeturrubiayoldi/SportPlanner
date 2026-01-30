@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { TeamService } from '../../../core/services/team.service';
 import { SeasonService, Season } from '../../../core/services/season.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { CategoryService, Category } from '../../../core/services/category.service';
+import { SubscriptionService } from '../../../core/services/subscription.service';
 
 @Component({
   selector: 'app-create-team-modal',
@@ -20,25 +22,31 @@ export class CreateTeamModalComponent implements OnInit {
   name: string = '';
   birthYear: number | null = null;
   description: string = '';
-  category: string = '';
+  selectedCategory: Category | null = null;
   division: string = '';
 
   // State
   loading: boolean = false;
+  loadingCategories: boolean = false;
   activeSeason: Season | null = null;
   errorMsg: string = '';
 
   // Options
-  categories: string[] = ['Prebenjamín', 'Benjamín', 'Alevín', 'Infantil', 'Cadete', 'Juvenil', 'Senior'];
+  categories: Category[] = [];
   years: number[] = [];
 
   private teamService = inject(TeamService);
   private seasonService = inject(SeasonService);
   private authService = inject(AuthService);
+  private categoryService = inject(CategoryService);
+  private subscriptionService = inject(SubscriptionService);
+  private cdr = inject(import('@angular/core').ChangeDetectorRef);
 
   async ngOnInit() {
+    console.log('Modal Init');
     this.generateYears();
     await this.loadActiveSeason();
+    await this.loadCategories();
   }
 
   generateYears() {
@@ -53,6 +61,31 @@ export class CreateTeamModalComponent implements OnInit {
     const user = this.authService.currentUser();
     if (user) {
       this.activeSeason = await this.seasonService.getActiveSeason(user.id);
+      console.log('Active Season:', this.activeSeason);
+    }
+  }
+
+  async loadCategories() {
+    console.log('Loading Categories...');
+    const user = this.authService.currentUser();
+    if (!user) return;
+
+    this.loadingCategories = true;
+    try {
+      // Obtener la suscripción activa para saber el sportId
+      const subscription = await this.subscriptionService.getActiveSubscription(user.id);
+      console.log('Subscription:', subscription);
+      
+      if (subscription) {
+        this.categories = await this.categoryService.getCategoriesBySport(subscription.sportId);
+        console.log('Categories Loaded:', this.categories);
+        this.cdr.detectChanges(); // Forzar actualización de vista
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    } finally {
+      this.loadingCategories = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -62,7 +95,7 @@ export class CreateTeamModalComponent implements OnInit {
       return;
     }
 
-    if (!this.name || !this.category) {
+    if (!this.name || !this.selectedCategory) {
        this.errorMsg = 'Nombre y Categoría son obligatorios.';
        return;
     }
@@ -74,14 +107,14 @@ export class CreateTeamModalComponent implements OnInit {
       const teamRequest = {
         subscriptionId: this.activeSeason.subscriptionId,
         name: this.name,
-        birthYear: this.birthYear || undefined, // undefined to send null if backend handles it
+        birthYear: this.birthYear || undefined,
         description: this.description
       };
 
       await this.teamService.createTeamAndAssignToSeason(
         teamRequest,
         this.activeSeason.id,
-        this.category,
+        this.selectedCategory.name, // Por ahora usamos el nombre, después migraremos a categoryId
         this.division
       );
 
@@ -100,21 +133,13 @@ export class CreateTeamModalComponent implements OnInit {
     this.close.emit();
   }
 
-  // Helper to suggested category
+  // Helper to suggest category based on birth year
   onYearChange() {
-    if (!this.birthYear) return;
+    if (!this.birthYear || this.categories.length === 0) return;
     
-    // Simple logic based on age (Current Year - Birth Year)
-    // This could be moved to a utility or service
-    const currentYear = new Date().getFullYear();
-    const age = currentYear - this.birthYear;
-
-    if (age <= 7) this.category = 'Prebenjamín';
-    else if (age <= 9) this.category = 'Benjamín';
-    else if (age <= 11) this.category = 'Alevín';
-    else if (age <= 13) this.category = 'Infantil';
-    else if (age <= 15) this.category = 'Cadete';
-    else if (age <= 18) this.category = 'Juvenil';
-    else this.category = 'Senior';
+    const suggested = this.categoryService.suggestCategory(this.birthYear, this.categories);
+    if (suggested) {
+      this.selectedCategory = suggested;
+    }
   }
 }

@@ -77,4 +77,26 @@ export class SubscriptionService {
       return { success: false, error: errorMessage || 'Error al procesar la suscripción' };
     }
   }
+
+  async getActiveSubscription(userId: string): Promise<ActiveSubscription | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<ActiveSubscription>(`${this.apiUrl}/active/${userId}`)
+      );
+      return response;
+    } catch (err) {
+      console.error('Error fetching active subscription:', err);
+      return null;
+    }
+  }
+}
+
+export interface ActiveSubscription {
+  id: string;
+  sportId: string;
+  sportName: string;
+  planType: string;
+  status: string;
+  startDate: string;
+  endDate: string;
 }

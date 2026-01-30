@@ -9,6 +9,7 @@ public interface ISubscriptionService
     Task<IEnumerable<SportResponse>> GetSportsAsync();
     Task<SubscriptionResponse> CreateSubscriptionAsync(SubscribeRequest request);
     Task<bool> CheckSubscriptionStatusAsync(string userId);
+    Task<ActiveSubscriptionResponse?> GetActiveSubscriptionAsync(string userId);
 }
 
 public class SubscriptionService : ISubscriptionService
@@ -118,6 +119,42 @@ public class SubscriptionService : ISubscriptionService
         {
             Console.WriteLine($"Error checking subscription for {userId}: {ex.Message}");
             return false;
+        }
+    }
+
+    public async Task<ActiveSubscriptionResponse?> GetActiveSubscriptionAsync(string userId)
+    {
+        try
+        {
+            string nowIso = DateTime.UtcNow.ToString("o");
+            
+            var response = await _supabase.From<SubscriptionModel>()
+                .Filter("owner_id", Constants.Operator.Equals, userId)
+                .Filter("status", Constants.Operator.Equals, "active")
+                .Filter("end_date", Constants.Operator.GreaterThan, nowIso)
+                .Single();
+
+            if (response == null) return null;
+
+            // Obtener el nombre del deporte
+            var sport = await _supabase.From<SportModel>()
+                .Filter("id", Constants.Operator.Equals, response.SportId)
+                .Single();
+
+            return new ActiveSubscriptionResponse(
+                response.Id,
+                response.SportId,
+                sport?.Name ?? "Desconocido",
+                response.PlanType,
+                response.Status,
+                response.StartDate,
+                response.EndDate
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting active subscription for {userId}: {ex.Message}");
+            return null;
         }
     }
 }

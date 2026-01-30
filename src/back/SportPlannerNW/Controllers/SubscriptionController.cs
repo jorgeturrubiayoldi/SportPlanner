@@ -56,4 +56,15 @@ public class SubscriptionController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    /// <summary>
+    /// Obtiene la suscripción activa del usuario incluyendo el sportId
+    /// </summary>
+    [HttpGet("active/{userId}")]
+    public async Task<IActionResult> GetActiveSubscription(string userId)
+    {
+        var subscription = await _subscriptionService.GetActiveSubscriptionAsync(userId);
+        if (subscription == null) return NoContent();
+        return Ok(subscription);
+    }
 }

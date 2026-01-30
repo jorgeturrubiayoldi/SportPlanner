@@ -53,16 +53,22 @@
         <!-- Category -->
         <div class="space-y-2">
           <label for="category" class="text-sm font-bold text-foreground ml-1">Categoría <span class="text-destructive">*</span></label>
-          <select 
-            id="category" 
-            [(ngModel)]="category"
-            class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none"
-          >
-            <option value="" disabled selected>Selecciona categoría...</option>
-            @for (cat of categories; track cat) {
-              <option [value]="cat">{{ cat }}</option>
-            }
-          </select>
+          @if (loadingCategories) {
+            <div class="w-full bg-background border border-border rounded-xl px-4 py-3 text-muted-foreground">
+              Cargando categorías...
+            </div>
+          } @else {
+            <select 
+              id="category" 
+              [(ngModel)]="selectedCategory"
+              class="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none"
+            >
+              <option [ngValue]="null" disabled selected>Selecciona categoría...</option>
+              @for (cat of categories; track cat.id) {
+                <option [ngValue]="cat">{{ cat.name }}</option>
+              }
+            </select>
+          }
         </div>
       </div>
 
@@ -105,7 +111,7 @@
       </button>
       <button 
         (click)="onCreate()" 
-        [disabled]="loading || !name || !category"
+        [disabled]="loading || !name || !selectedCategory"
         class="flex-[1.5] bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
       >
         @if (loading) {
