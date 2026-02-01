@@ -62,6 +62,10 @@ export const routes: Routes = [
             loadComponent: () => import('./settings/seasons/seasons.component').then(m => m.SeasonsComponent),
           },
           {
+            path: 'categorias',
+            loadComponent: () => import('./concepts/categories/categories.component').then(m => m.CategoriesComponent),
+          },
+          {
             path: 'conceptos',
             loadComponent: () => import('./concepts/concepts.component').then(m => m.ConceptsComponent),
           },

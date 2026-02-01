@@ -16,18 +16,23 @@
     <!-- Body -->
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6 space-y-4">
       
-      <!-- Category Info (Read only) -->
-      @if (category) {
-        <div class="p-3 rounded-xl bg-primary/5 border border-primary/10 flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div>
-            <p class="text-xs text-muted-foreground uppercase tracking-wider font-bold">Categoría</p>
-            <p class="text-sm font-medium text-foreground">{{ category.name }}</p>
+      <!-- Category Selector -->
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-foreground">Categoría</label>
+        <div class="relative">
+          <select 
+            formControlName="conceptCategoryId"
+            class="w-full pl-4 pr-10 py-2.5 rounded-xl bg-muted/30 border border-input focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all appearance-none cursor-pointer">
+            <option value="" disabled>Selecciona una categoría</option>
+            @for (cat of categories(); track cat.id) {
+              <option [value]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+          <div class="absolute right-3 top-2.5 pointer-events-none text-muted-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           </div>
         </div>
-      }
+      </div>
 
       <!-- Name -->
       <div class="space-y-2">

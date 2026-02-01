@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './create-concept-modal.component.html',
   styles: []
 })
-export class CreateConceptModalComponent implements OnChanges {
+export class CreateConceptModalComponent implements OnChanges, OnInit {
   @Input() concept: Concept | null = null;
   @Input() category: ConceptCategory | null = null;
   @Output() close = new EventEmitter<void>();
@@ -25,9 +25,14 @@ export class CreateConceptModalComponent implements OnChanges {
   protected form: FormGroup;
   protected loading = signal(false);
   protected isEditMode = signal(false);
+  protected categories = signal<ConceptCategory[]>([]);
+
+  // Sport ID hardcoded for now as in other components
+  private readonly BASKETBALL_SPORT_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
 
   constructor() {
     this.form = this.fb.group({
+      conceptCategoryId: ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
       videoUrl: [''],
@@ -36,10 +41,25 @@ export class CreateConceptModalComponent implements OnChanges {
     });
   }
 
+  async ngOnInit() {
+    await this.loadCategories();
+  }
+
+  async loadCategories() {
+    try {
+      const tree = await this.conceptService.getCategoriesTree(this.BASKETBALL_SPORT_ID);
+      const flat = this.conceptService.flattenCategories(tree);
+      this.categories.set(flat);
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['concept'] && this.concept) {
       this.isEditMode.set(true);
       this.form.patchValue({
+        conceptCategoryId: this.concept.conceptCategoryId,
         name: this.concept.name,
         description: this.concept.description,
         videoUrl: this.concept.videoUrl,
@@ -49,27 +69,25 @@ export class CreateConceptModalComponent implements OnChanges {
     } else {
       this.isEditMode.set(false);
       this.form.reset({
-        difficultyLevel: 1
+        difficultyLevel: 1,
+        conceptCategoryId: this.category?.id || ''
       });
     }
   }
 
   async onSubmit() {
-    if (this.form.invalid || !this.category) return;
+    if (this.form.invalid) return;
 
     this.loading.set(true);
     try {
       const formValue = this.form.value;
       const user = this.authService.currentUser();
       
-      // Determinar suscripción (si es admin podría ser null para sistema, 
-      // pero por ahora asignamos la del usuario si no es create system concept)
-      // TODO: Manejar lógica de isSystem para admins
       const subscriptionId = (user as any)?.subscriptionId || null;
 
       if (this.isEditMode() && this.concept) {
         await this.conceptService.updateConcept(this.concept.id, {
-          conceptCategoryId: this.category.id, // Mantener categoría original o permitir cambiar? Por ahora fija
+          conceptCategoryId: formValue.conceptCategoryId,
           name: formValue.name,
           description: formValue.description,
           videoUrl: formValue.videoUrl,
@@ -79,7 +97,7 @@ export class CreateConceptModalComponent implements OnChanges {
         });
       } else {
         await this.conceptService.createConcept({
-          conceptCategoryId: this.category.id,
+          conceptCategoryId: formValue.conceptCategoryId,
           subscriptionId: subscriptionId,
           name: formValue.name,
           description: formValue.description,
