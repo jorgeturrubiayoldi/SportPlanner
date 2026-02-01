@@ -68,16 +68,7 @@ export class CategoriesComponent implements OnInit {
     this.selectedCategory.set(category);
   }
 
-  getCategoryIcon(name: string): string {
-    const lowerName = name.toLowerCase();
-    if (lowerName.includes('ataque') || lowerName.includes('attack')) return '⚔️';
-    if (lowerName.includes('defensa') || lowerName.includes('defense')) return '🛡️';
-    if (lowerName.includes('tiro') || lowerName.includes('shoot')) return '🎯';
-    if (lowerName.includes('bote') || lowerName.includes('dribble')) return '🏀';
-    if (lowerName.includes('pase') || lowerName.includes('pass')) return '➡️';
-    if (lowerName.includes('rebote') || lowerName.includes('rebound')) return '📥';
-    return '📂';
-  }
+
 
   // Actions
   openCreateModal(parentCategory?: ConceptCategory) {

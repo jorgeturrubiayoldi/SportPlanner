@@ -1,11 +1,30 @@
 using SportPlannerNW.Services;
 using Supabase;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+// JWT Configuration
+var jwtSecret = builder.Configuration["Supabase:JwtSecret"];
+var bytes = Encoding.UTF8.GetBytes(jwtSecret ?? "super-secret-key-that-should-be-in-appsettings-but-is-missing");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(bytes),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 // Supabase Configuration - use ServiceKey to bypass RLS
 // Supabase Configuration - use ServiceKey to bypass RLS
@@ -28,6 +47,7 @@ builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IConceptService, ConceptService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IPlanService, PlanService>();
 
 // CORS Configuration
 builder.Services.AddCors(options =>
@@ -53,6 +73,7 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

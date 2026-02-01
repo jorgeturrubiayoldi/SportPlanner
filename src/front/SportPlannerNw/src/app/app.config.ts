@@ -8,12 +8,14 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes), 
-    provideHttpClient(withFetch(), withInterceptors([errorInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
     provideClientHydration(withEventReplay()),
     provideTranslateService({
       defaultLanguage: 'es'

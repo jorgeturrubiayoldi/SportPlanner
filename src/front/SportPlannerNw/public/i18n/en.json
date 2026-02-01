@@ -2,7 +2,8 @@
   "COMMON": {
     "WELCOME": "Welcome to SportPlanner",
     "LANGUAGE": "Language",
-    "OPTIONAL": "(Optional)"
+    "OPTIONAL": "(Optional)",
+    "PLAN": "Plan"
   },
   "POSITIONS": {
     "GOALKEEPER": "Goalkeeper",
@@ -72,11 +73,24 @@
       },
       "PLANNING": {
         "TITLE": "Planning",
-        "EMPTY": "No planning created."
+        "EMPTY": "No planning created.",
+        "ADD": "Add Plan"
       },
       "CALENDAR": {
         "TITLE": "Calendar",
         "EMPTY": "No events in current calendar."
+      }
+    },
+    "PLANNING": {
+      "CREATE_MODAL": {
+        "TITLE": "Create Plan",
+        "SUBTITLE": "Define a new training plan",
+        "NAME": "Plan Name",
+        "NAME_PLACEHOLDER": "Ex: Pre-season 2024",
+        "DESCRIPTION": "Description",
+        "DESCRIPTION_PLACEHOLDER": "Goals, notes...",
+        "START_DATE": "Start Date",
+        "END_DATE": "End Date"
       }
     },
     "CREATE_MODAL": {

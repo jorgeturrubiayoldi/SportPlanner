@@ -9,11 +9,13 @@ import { AuthService } from '../../core/services/auth.service';
 type Tab = 'players' | 'planning' | 'calendar';
 
 import { CreatePlayerModalComponent } from '../../shared/components/create-player-modal/create-player-modal.component';
+import { PlanService, Plan } from '../../core/services/plan.service';
+import { CreatePlanModalComponent } from '../../shared/components/create-plan-modal/create-plan-modal.component';
 
 @Component({
   selector: 'app-team-management',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, CreatePlayerModalComponent],
+  imports: [CommonModule, RouterModule, TranslateModule, CreatePlayerModalComponent, CreatePlanModalComponent],
   templateUrl: './team-management.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -22,6 +24,7 @@ export class TeamManagementComponent implements OnInit {
   private teamService = inject(TeamService);
   private seasonService = inject(SeasonService);
   private authService = inject(AuthService);
+  private planService = inject(PlanService);
 
   teamId = signal<string>('');
   currentTab = signal<Tab>('players');
@@ -34,6 +37,11 @@ export class TeamManagementComponent implements OnInit {
   players = signal<any[]>([]);
   loadingPlayers = signal<boolean>(false);
   showCreatePlayerModal = signal<boolean>(false);
+
+  // Plans Data
+  plans = signal<Plan[]>([]);
+  loadingPlans = signal<boolean>(false);
+  showCreatePlanModal = signal<boolean>(false);
 
   teamHeaderInfo = computed(() => {
     const t = this.team();
@@ -88,8 +96,9 @@ export class TeamManagementComponent implements OnInit {
         const seasons = await this.teamService.getTeamSeasons(tId);
         this.teamSeasons.set(seasons);
         
-        // 3. Load Players
+        // 3. Load Data
         this.loadPlayers();
+        this.loadPlans();
     }
   }
 
@@ -108,6 +117,21 @@ export class TeamManagementComponent implements OnInit {
      }
   }
 
+  async loadPlans() {
+    const tId = this.teamId();
+    if (!tId) return;
+
+    this.loadingPlans.set(true);
+    try {
+      const plans = await this.planService.getPlansByTeam(tId);
+      this.plans.set(plans);
+    } catch (error) {
+      console.error('Error loading plans', error);
+    } finally {
+      this.loadingPlans.set(false);
+    }
+ }
+
   openCreatePlayerModal() {
     this.showCreatePlayerModal.set(true);
   }
@@ -118,6 +142,18 @@ export class TeamManagementComponent implements OnInit {
 
   onPlayerCreated() {
     this.loadPlayers();
+  }
+
+  openCreatePlanModal() {
+    this.showCreatePlanModal.set(true);
+  }
+
+  closeCreatePlanModal() {
+    this.showCreatePlanModal.set(false);
+  }
+
+  onPlanCreated() {
+    this.loadPlans();
   }
 
   setTab(tab: Tab) {

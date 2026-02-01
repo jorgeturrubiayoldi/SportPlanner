@@ -2,7 +2,8 @@
   "COMMON": {
     "WELCOME": "Bienvenido a SportPlanner",
     "LANGUAGE": "Idioma",
-    "OPTIONAL": "(Opcional)"
+    "OPTIONAL": "(Opcional)",
+    "PLAN": "Planificación"
   },
   "POSITIONS": {
     "GOALKEEPER": "Portero",
@@ -34,8 +35,7 @@
     "SEASONS": "Temporadas",
     "CONCEPTS": "Conceptos",
     "CATEGORIES": "Categorías"
-  }
-  ,
+  },
   "TEAMS": {
     "TITLE": "Equipos",
     "SUBTITLE": "Gestiona tus equipos para la temporada",
@@ -72,11 +72,24 @@
       },
       "PLANNING": {
         "TITLE": "Planificación",
-        "EMPTY": "No hay planificaciones creadas."
+        "EMPTY": "No hay planificaciones creadas.",
+        "ADD": "Añadir Planificación"
       },
       "CALENDAR": {
         "TITLE": "Calendario",
         "EMPTY": "No hay eventos en el calendario."
+      }
+    },
+    "PLANNING": {
+      "CREATE_MODAL": {
+        "TITLE": "Crear Planificación",
+        "SUBTITLE": "Define un nuevo plan de entrenamiento",
+        "NAME": "Nombre del Plan",
+        "NAME_PLACEHOLDER": "Ej: Pretemporada 2024",
+        "DESCRIPTION": "Descripción",
+        "DESCRIPTION_PLACEHOLDER": "Objetivos, notas...",
+        "START_DATE": "Fecha de Inicio",
+        "END_DATE": "Fecha de Fin"
       }
     },
     "CREATE_MODAL": {

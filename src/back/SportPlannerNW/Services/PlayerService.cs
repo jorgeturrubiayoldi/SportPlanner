@@ -50,7 +50,6 @@ public class PlayerService : IPlayerService
         
         // Debug logging
         Console.WriteLine($"[PlayerService] Session is null: {_supabase.Auth.CurrentSession == null}");
-        Console.WriteLine($"[PlayerService] Client Options Key (Prefix): {_supabase.Options.Headers["apikey"].Substring(0, 10)}...");
 
         var response = await _supabase.From<Player>()
             .Filter("team_id", Constants.Operator.Equals, teamId)
