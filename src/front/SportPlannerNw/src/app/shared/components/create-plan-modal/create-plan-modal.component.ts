@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PlanService } from '../../../core/services/plan.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-plan-modal',
@@ -21,12 +22,26 @@ export class CreatePlanModalComponent {
   description = '';
   startDate = '';
   endDate = '';
+  duration: number | null = null;
+  selectedDays: string[] = [];
+  
+  // Data Sources
+  weekDays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
   // State
   loading = false;
   errorMsg = '';
 
   private planService = inject(PlanService);
+  private router = inject(Router);
+
+  toggleDay(day: string) {
+    if (this.selectedDays.includes(day)) {
+      this.selectedDays = this.selectedDays.filter(d => d !== day);
+    } else {
+      this.selectedDays.push(day);
+    }
+  }
 
   async onCreate() {
     if (!this.teamId) return;
@@ -45,14 +60,19 @@ export class CreatePlanModalComponent {
           name: this.name,
           description: this.description || undefined,
           startDate: this.startDate,
-          endDate: this.endDate
+          endDate: this.endDate,
+          trainingDays: this.selectedDays,
+          duration: this.duration || undefined
         };
 
-      await this.planService.createPlan(planRequest);
+      const createdPlan = await this.planService.createPlan(planRequest);
 
       this.planCreated.emit();
       this.close.emit();
       
+      // Redirect to Builder
+      this.router.navigate(['/teams', this.teamId, 'plans', createdPlan.id, 'builder']);
+
     } catch (error: any) {
       console.error('Error creating plan:', error);
       this.errorMsg = 'TEAMS.ERRORS.CREATE_ERROR'; // reusing existing error key

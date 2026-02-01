@@ -11,11 +11,12 @@ type Tab = 'players' | 'planning' | 'calendar';
 import { CreatePlayerModalComponent } from '../../shared/components/create-player-modal/create-player-modal.component';
 import { PlanService, Plan } from '../../core/services/plan.service';
 import { CreatePlanModalComponent } from '../../shared/components/create-plan-modal/create-plan-modal.component';
+import { TeamCalendarComponent } from '../../shared/components/team-calendar/team-calendar.component';
 
 @Component({
   selector: 'app-team-management',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, CreatePlayerModalComponent, CreatePlanModalComponent],
+  imports: [CommonModule, RouterModule, TranslateModule, CreatePlayerModalComponent, CreatePlanModalComponent, TeamCalendarComponent],
   templateUrl: './team-management.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

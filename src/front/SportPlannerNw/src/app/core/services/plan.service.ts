@@ -11,6 +11,8 @@ export interface Plan {
   startDate: string;
   endDate: string;
   isActive: boolean;
+  trainingDays?: string[];
+  duration?: number;
 }
 
 export interface CreatePlan {
@@ -19,6 +21,9 @@ export interface CreatePlan {
   description?: string;
   startDate: string;
   endDate: string;
+  trainingDays?: string[];
+  duration?: number;
+  conceptIds?: string[];
 }
 
 @Injectable({
@@ -38,5 +43,17 @@ export class PlanService {
 
   async getPlanById(id: string): Promise<Plan> {
     return firstValueFrom(this.http.get<Plan>(`${this.apiUrl}/${id}`));
+  }
+
+  async addConceptToPlan(planId: string, conceptId: string, scheduledDate?: string, notes?: string): Promise<any> {
+    return firstValueFrom(this.http.post(`${this.apiUrl}/${planId}/concepts`, { conceptId, scheduledDate, notes }));
+  }
+
+  async removeConceptFromPlan(planId: string, conceptId: string): Promise<any> {
+    return firstValueFrom(this.http.delete(`${this.apiUrl}/${planId}/concepts/${conceptId}`));
+  }
+
+  async getPlanConcepts(planId: string): Promise<any[]> {
+    return firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/${planId}/concepts`));
   }
 }

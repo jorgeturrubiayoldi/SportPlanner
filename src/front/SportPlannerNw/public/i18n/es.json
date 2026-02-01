@@ -5,6 +5,15 @@
     "OPTIONAL": "(Opcional)",
     "PLAN": "Planificación"
   },
+  "DAYS": {
+    "MONDAY": "Lunes",
+    "TUESDAY": "Martes",
+    "WEDNESDAY": "Miércoles",
+    "THURSDAY": "Jueves",
+    "FRIDAY": "Viernes",
+    "SATURDAY": "Sábado",
+    "SUNDAY": "Domingo"
+  },
   "POSITIONS": {
     "GOALKEEPER": "Portero",
     "DEFENDER": "Defensa",
@@ -89,7 +98,12 @@
         "DESCRIPTION": "Descripción",
         "DESCRIPTION_PLACEHOLDER": "Objetivos, notas...",
         "START_DATE": "Fecha de Inicio",
-        "END_DATE": "Fecha de Fin"
+        "END_DATE": "Fecha de Fin",
+        "TRAINING_DAYS": "Días de Entrenamiento",
+        "DURATION": "Duración (minutos)",
+        "DURATION_PLACEHOLDER": "Ej: 90",
+        "CONCEPTS": "Conceptos a Trabajar",
+        "SELECT_CONCEPTS": "Selecciona conceptos"
       }
     },
     "CREATE_MODAL": {

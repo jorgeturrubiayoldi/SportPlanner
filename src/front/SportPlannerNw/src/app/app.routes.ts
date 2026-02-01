@@ -40,6 +40,10 @@ export const routes: Routes = [
         path: 'teams/:id/manage',
         loadComponent: () => import('./teams/team-management/team-management.component').then(m => m.TeamManagementComponent),
       },
+      {
+        path: 'teams/:teamId/plans/:planId/builder',
+        loadComponent: () => import('./teams/plan-builder/plan-builder').then(m => m.PlanBuilder),
+      },
       // Placeholders for sidebar links to prevent 404s
       {
         path: 'planificaciones',

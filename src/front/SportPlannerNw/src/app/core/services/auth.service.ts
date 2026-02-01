@@ -23,10 +23,10 @@ export class AuthService {
   loading = signal(false);
 
   constructor() {
-    this.checkSession();
+    // Session check is now handled via init() called from APP_INITIALIZER
   }
 
-  private async checkSession() {
+  public async init(): Promise<void> {
     try {
       const { data: { session } } = await this.supabaseService.getClient().auth.getSession();
       if (session?.user) {
@@ -89,7 +89,7 @@ export class AuthService {
         refresh_token: '' // Opcional dependiendo de tu implementación
       });
 
-      await this.checkSession();
+      await this.init();
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.error?.message || 'Error al crear la cuenta' };

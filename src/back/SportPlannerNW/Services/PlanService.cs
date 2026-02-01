@@ -45,11 +45,31 @@ public class PlanService : IPlanService
             Description = dto.Description,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
-            IsActive = true
+            TrainingDays = dto.TrainingDays,
+            Duration = dto.Duration,
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         var result = await _supabase.From<PlanModel>().Insert(model);
-        return MapToDto(result.Models.First());
+        var createdPlan = result.Models.First();
+
+        // Create plan concepts relations
+        if (dto.ConceptIds != null && dto.ConceptIds.Any())
+        {
+            var planConcepts = dto.ConceptIds.Select((conceptId, index) => new PlanConceptModel
+            {
+                PlanId = createdPlan.Id,
+                ConceptId = conceptId,
+                SortOrder = index,
+                CreatedAt = DateTime.UtcNow
+            }).ToList();
+
+            await _supabase.From<PlanConceptModel>().Insert(planConcepts);
+        }
+
+        return MapToDto(createdPlan);
     }
 
     private static PlanDto MapToDto(PlanModel model)
@@ -62,7 +82,49 @@ public class PlanService : IPlanService
             Description = model.Description,
             StartDate = model.StartDate,
             EndDate = model.EndDate,
+            TrainingDays = model.TrainingDays,
+            Duration = model.Duration,
             IsActive = model.IsActive
         };
+    }
+    public async Task AddConceptToPlan(string planId, string conceptId, string? notes = null, DateTime? scheduledDate = null)
+    {
+        await _supabase.InitializeAsync();
+        var model = new PlanConceptModel
+        {
+            PlanId = planId,
+            ConceptId = conceptId,
+            Notes = notes,
+            ScheduledDate = scheduledDate,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _supabase.From<PlanConceptModel>().Insert(model);
+    }
+
+    public async Task RemoveConceptFromPlan(string planId, string conceptId)
+    {
+        await _supabase.InitializeAsync();
+        await _supabase.From<PlanConceptModel>()
+            .Where(x => x.PlanId == planId && x.ConceptId == conceptId)
+            .Delete();
+    }
+
+    public async Task<List<PlanConceptDto>> GetPlanConcepts(string planId)
+    {
+        await _supabase.InitializeAsync();
+        var result = await _supabase.From<PlanConceptModel>()
+            .Where(x => x.PlanId == planId)
+            .Order(x => x.SortOrder, Supabase.Postgrest.Constants.Ordering.Ascending)
+            .Get();
+
+        return result.Models.Select(x => new PlanConceptDto
+        {
+            Id = x.Id,
+            PlanId = x.PlanId,
+            ConceptId = x.ConceptId,
+            Notes = x.Notes,
+            ScheduledDate = x.ScheduledDate,
+            SortOrder = x.SortOrder
+        }).ToList();
     }
 }

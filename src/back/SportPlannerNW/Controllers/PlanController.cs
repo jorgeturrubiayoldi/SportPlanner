@@ -79,4 +79,49 @@ public class PlanController : ControllerBase
             return StatusCode(500, "Error creating data");
         }
     }
+
+    [HttpGet("{id}/concepts")]
+    public async Task<ActionResult<List<PlanConceptDto>>> GetConcepts(string id)
+    {
+        try
+        {
+            var concepts = await _planService.GetPlanConcepts(id);
+            return Ok(concepts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting concepts for plan {Id}", id);
+            return StatusCode(500, "Error getting data");
+        }
+    }
+
+    [HttpPost("{id}/concepts")]
+    public async Task<ActionResult> AddConcept(string id, [FromBody] AddPlanConceptDto dto)
+    {
+        try
+        {
+            await _planService.AddConceptToPlan(id, dto.ConceptId, dto.Notes, dto.ScheduledDate);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding concept to plan {Id}", id);
+            return StatusCode(500, "Error adding data");
+        }
+    }
+
+    [HttpDelete("{id}/concepts/{conceptId}")]
+    public async Task<ActionResult> RemoveConcept(string id, string conceptId)
+    {
+        try
+        {
+            await _planService.RemoveConceptFromPlan(id, conceptId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error removing concept from plan {Id}", id);
+            return StatusCode(500, "Error removing data");
+        }
+    }
 }

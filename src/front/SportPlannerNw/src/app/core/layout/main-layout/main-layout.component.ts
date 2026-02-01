@@ -44,10 +44,8 @@ export class MainLayoutComponent implements OnInit {
   // Items de navegación
   protected navItems = signal<NavItem[]>([
     { label: 'MENU.DASHBOARD', icon: 'grid', route: '/dashboard' },
-    { label: 'MENU.PLANNING', icon: 'calendar', route: '/planificaciones' },
     { label: 'MENU.TEAMS', icon: 'users', route: '/equipos' },
     { label: 'MENU.EXERCISES', icon: 'activity', route: '/ejercicios' },
-    { label: 'MENU.MARKETPLACE', icon: 'shopping-bag', route: '/marketplace' },
     { 
       label: 'MENU.SETTINGS', 
       icon: 'settings', 

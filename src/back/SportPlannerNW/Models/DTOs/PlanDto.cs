@@ -22,6 +22,12 @@ public class PlanDto
     [JsonPropertyName("endDate")]
     public DateTime EndDate { get; set; }
 
+    [JsonPropertyName("trainingDays")]
+    public List<string> TrainingDays { get; set; } = new();
+
+    [JsonPropertyName("duration")]
+    public int? Duration { get; set; }
+
     [JsonPropertyName("isActive")]
     public bool IsActive { get; set; }
 }
@@ -42,4 +48,13 @@ public class CreatePlanDto
 
     [JsonPropertyName("endDate")]
     public DateTime EndDate { get; set; }
+
+    [JsonPropertyName("trainingDays")]
+    public List<string> TrainingDays { get; set; } = new();
+
+    [JsonPropertyName("duration")]
+    public int? Duration { get; set; }
+
+    [JsonPropertyName("conceptIds")]
+    public List<string> ConceptIds { get; set; } = new();
 }

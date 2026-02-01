@@ -49,9 +49,9 @@ import { Toast } from '../../../core/models/notification.model';
 
       <!-- Close Button -->
       <button (click)="close.emit(toast.id)" 
-              class="flex-shrink-0 -mr-2 -mt-2 rounded-md p-1 opacity-60 hover:opacity-100 focus:opacity-100 hover:bg-black/5 dark:hover:bg-white/10 focus:outline-none transition-colors">
-        <span class="sr-only">Close</span>
-        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              class="flex-shrink-0 rounded-md p-1.5 opacity-80 hover:opacity-100 hover:bg-black/10 dark:hover:bg-white/10 focus:outline-none transition-colors"
+              aria-label="Close notification">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>

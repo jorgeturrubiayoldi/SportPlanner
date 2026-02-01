@@ -17,6 +17,8 @@ public class PlanModel : BaseModel
     [Column("description")] public string? Description { get; set; }
     [Column("start_date")] public DateTime StartDate { get; set; }
     [Column("end_date")] public DateTime EndDate { get; set; }
+    [Column("training_days")] public List<string> TrainingDays { get; set; } = new();
+    [Column("duration")] public int? Duration { get; set; }
     [Column("is_active")] public bool IsActive { get; set; } = true;
     [Column("created_at")] public DateTime CreatedAt { get; set; }
     [Column("updated_at")] public DateTime UpdatedAt { get; set; }
