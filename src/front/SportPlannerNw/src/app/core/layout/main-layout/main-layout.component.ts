@@ -8,17 +8,19 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SeasonService, Season } from '../../services/season.service';
 import { CreateSeasonModalComponent } from '../../../shared/components/create-season-modal/create-season-modal.component';
 import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
+import { UserSettingsModalComponent } from '../../../shared/components/user-settings-modal/user-settings-modal.component';
 
 interface NavItem {
   label: string;
   icon: string;
-  route: string;
+  route?: string;
+  children?: NavItem[];
 }
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterLinkActive, CreateSeasonModalComponent, FormsModule, TranslateModule, LanguageSwitcherComponent],
+  imports: [CommonModule, RouterLink, RouterOutlet, RouterLinkActive, CreateSeasonModalComponent, FormsModule, TranslateModule, LanguageSwitcherComponent, UserSettingsModalComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,8 +35,11 @@ export class MainLayoutComponent implements OnInit {
   protected sidebarCollapsed = signal(false);
   protected mobileMenuOpen = signal(false);
   protected showSeasonModal = signal(false);
+  protected showSettingsModal = signal(false);
+  protected showUserMenu = signal(false);
   protected seasons = signal<any[]>([]);
   protected selectedSeason = signal<any | null>(null);
+  protected expandedItems = signal<Set<string>>(new Set());
 
   // Items de navegación
   protected navItems = signal<NavItem[]>([
@@ -42,7 +47,16 @@ export class MainLayoutComponent implements OnInit {
     { label: 'MENU.PLANNING', icon: 'calendar', route: '/planificaciones' },
     { label: 'MENU.TEAMS', icon: 'users', route: '/equipos' },
     { label: 'MENU.EXERCISES', icon: 'activity', route: '/ejercicios' },
-    { label: 'MENU.MARKETPLACE', icon: 'shopping-bag', route: '/marketplace' }
+    { label: 'MENU.MARKETPLACE', icon: 'shopping-bag', route: '/marketplace' },
+    { 
+      label: 'MENU.SETTINGS', 
+      icon: 'settings', 
+      children: [
+        { label: 'MENU.SEASONS', icon: 'calendar-range', route: '/ajustes/temporadas' },
+        { label: 'MENU.CONCEPTS', icon: 'list', route: '/ajustes/conceptos' },
+        { label: 'MENU.CATEGORIES', icon: 'tag', route: '/ajustes/categorias' }
+      ]
+    }
   ]);
 
   protected userName = computed(() => {
@@ -95,6 +109,30 @@ export class MainLayoutComponent implements OnInit {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  toggleSettingsModal(): void {
+    this.showSettingsModal.update(v => !v);
+    this.showUserMenu.set(false);
+  }
+
+  toggleUserMenu(): void {
+    this.showUserMenu.update(v => !v);
+  }
+
+  toggleSubmenu(label: string): void {
+    const expanded = this.expandedItems();
+    const newSet = new Set(expanded);
+    if (newSet.has(label)) {
+      newSet.delete(label);
+    } else {
+      newSet.add(label);
+    }
+    this.expandedItems.set(newSet);
+  }
+
+  isExpanded(label: string): boolean {
+    return this.expandedItems().has(label);
   }
 
   async logout(): Promise<void> {

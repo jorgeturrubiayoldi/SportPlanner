@@ -1,0 +1,230 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-300">
+  <div class="glass-card w-full max-w-4xl h-[600px] flex overflow-hidden animate-in zoom-in-95 duration-300 relative">
+    
+    <!-- Close Button -->
+    <button 
+      (click)="close.emit()" 
+      class="absolute top-4 right-4 z-20 p-2 rounded-full hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-muted/30 border-r border-border flex flex-col">
+      <div class="p-6 border-b border-border/50">
+        <h2 class="text-lg font-bold tracking-tight text-foreground">Configuración</h2>
+        <p class="text-xs text-muted-foreground mt-1">Administra tu cuenta</p>
+      </div>
+      
+      <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+        <button 
+          (click)="onTabChange('profile')"
+          [class]="activeTab() === 'profile' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
+          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium text-left">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Perfil
+        </button>
+        
+        <button 
+          (click)="onTabChange('users')"
+          [class]="activeTab() === 'users' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
+          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium text-left">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Usuarios
+        </button>
+
+        <button 
+          (click)="onTabChange('invoices')"
+          [class]="activeTab() === 'invoices' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
+          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium text-left">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+          Facturas
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 bg-card/50">
+      @switch (activeTab()) {
+        @case ('profile') {
+          <div class="flex-1 overflow-y-auto p-8 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div class="max-w-xl space-y-8">
+              
+              <!-- Header -->
+              <div>
+                <h3 class="text-xl font-bold text-foreground">Información del Perfil</h3>
+                <p class="text-sm text-muted-foreground mt-1">Actualiza tu información personal.</p>
+              </div>
+
+              <!-- Avatar Section -->
+              <div class="flex items-center gap-6">
+                <div class="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-xl shadow-primary/20">
+                    {{ user()?.fullName?.charAt(0) || user()?.email?.charAt(0) || 'U' }}
+                </div>
+                <div>
+                   <button class="px-4 py-2 bg-accent hover:bg-accent/80 text-accent-foreground text-sm font-medium rounded-lg transition-colors">
+                     Cambiar Avatar
+                   </button>
+                   <p class="text-xs text-muted-foreground mt-2">JPG, GIF o PNG. Max 1MB.</p>
+                </div>
+              </div>
+
+              <div class="h-px bg-border/50"></div>
+
+              <!-- Form Fields -->
+              <div class="grid gap-6">
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <label class="text-sm font-medium text-foreground">Nombre Completo</label>
+                    <input 
+                      type="text" 
+                      [value]="user()?.fullName" 
+                      readonly
+                      class="w-full bg-muted/50 border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-not-allowed opacity-75">
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-sm font-medium text-foreground">Rol</label>
+                    <input 
+                      type="text" 
+                      value="Admin Coach" 
+                      readonly
+                      class="w-full bg-muted/50 border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-not-allowed opacity-75">
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-foreground">Correo Electrónico</label>
+                  <input 
+                    type="email" 
+                    [value]="user()?.email" 
+                    readonly
+                    class="w-full bg-muted/50 border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-not-allowed opacity-75">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        }
+        @case ('users') {
+          <div class="flex-1 overflow-y-auto p-8 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div class="max-w-3xl space-y-8">
+              <div>
+                <h3 class="text-xl font-bold text-foreground">Usuarios de la Suscripción</h3>
+                <p class="text-sm text-muted-foreground mt-1">Gestiona quién tiene acceso a esta suscripción.</p>
+              </div>
+
+              <!-- Add User Form -->
+              <div class="bg-accent/10 p-4 rounded-xl border border-primary/20">
+                <h4 class="text-sm font-semibold mb-3">Añadir Nuevo Usuario</h4>
+                <div class="flex gap-3">
+                  <input 
+                    type="text" 
+                    [(ngModel)]="newMemberId"
+                    placeholder="ID del usuario (UUID)" 
+                    class="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50 outline-none">
+                  <button 
+                    (click)="addMember()"
+                    [disabled]="!newMemberId() || addingMember()"
+                    class="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-primary/90 transition-colors disabled:opacity-50">
+                    {{ addingMember() ? 'Añadiendo...' : 'Añadir' }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Users List -->
+              <div class="space-y-2">
+                @if (activeSubscription()) {
+                  <div class="flex items-center justify-between p-4 bg-card border border-border rounded-xl">
+                     <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold">
+                          Owner
+                        </div>
+                        <div>
+                          <p class="font-medium">Propietario</p>
+                          <p class="text-xs text-muted-foreground">Administrador</p>
+                        </div>
+                     </div>
+                     <span class="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full font-bold">Owner</span>
+                  </div>
+
+                  @for (member of members(); track member.id) {
+                    <div class="flex items-center justify-between p-4 bg-card border border-border rounded-xl">
+                      <div class="flex items-center gap-3">
+                         <div class="w-10 h-10 rounded-full bg-secondary/20 text-secondary flex items-center justify-center font-bold">
+                           {{ member.fullName?.charAt(0) || 'U' }}
+                         </div>
+                         <div>
+                           <p class="font-medium">{{ member.fullName || 'Usuario' }}</p>
+                           <p class="text-xs text-muted-foreground">{{ member.id }}</p>
+                         </div>
+                      </div>
+                      <button 
+                        (click)="removeMember(member.id)"
+                        class="text-destructive hover:bg-destructive/10 p-2 rounded-lg transition-colors" title="Eliminar usuario">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      </button>
+                   </div>
+                  }
+                } @else {
+                   <p class="text-muted-foreground text-center py-8">No se encontró una suscripción activa.</p>
+                }
+              </div>
+            </div>
+          </div>
+        }
+        @case ('invoices') {
+          <div class="flex-1 overflow-y-auto p-8 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div class="max-w-4xl space-y-6">
+              <div>
+                 <h3 class="text-xl font-bold text-foreground">Historial de Facturas</h3>
+                 <p class="text-sm text-muted-foreground mt-1">Consulta y descarga tus facturas.</p>
+              </div>
+
+              @if (loadingData()) {
+                <div class="flex justify-center py-12">
+                   <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
+                </div>
+              } @else {
+                <div class="border border-border rounded-xl overflow-hidden">
+                  <table class="w-full text-sm text-left">
+                    <thead class="bg-muted/50 text-muted-foreground font-medium border-b border-border">
+                      <tr>
+                        <th class="px-4 py-3">Número</th>
+                        <th class="px-4 py-3">Fecha</th>
+                        <th class="px-4 py-3">Monto</th>
+                        <th class="px-4 py-3">Estado</th>
+                        <th class="px-4 py-3 text-right">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border/50">
+                      @for (invoice of invoices(); track invoice.id) {
+                        <tr class="hover:bg-accent/5 transition-colors">
+                          <td class="px-4 py-3 font-medium">{{ invoice.invoiceNumber }}</td>
+                          <td class="px-4 py-3 text-muted-foreground">{{ invoice.dueDate | date:'mediumDate' }}</td>
+                          <td class="px-4 py-3 font-bold">{{ invoice.amount | currency: invoice.currency }}</td>
+                          <td class="px-4 py-3">
+                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                                   [class]="invoice.status === 'paid' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'">
+                               {{ invoice.status === 'paid' ? 'Pagado' : 'Pendiente' }}
+                             </span>
+                          </td>
+                          <td class="px-4 py-3 text-right">
+                            <button class="text-primary hover:underline font-medium text-xs">Descargar PDF</button>
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="5" class="px-4 py-8 text-center text-muted-foreground">No tienes facturas disponibles.</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
+    </main>
+
+  </div>
+</div>

@@ -89,6 +89,44 @@ export class SubscriptionService {
       return null;
     }
   }
+
+  async getInvoices(subscriptionId: string): Promise<any[]> {
+    try {
+      return await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/${subscriptionId}/invoices`));
+    } catch (err) {
+      console.error('Error fetching invoices:', err);
+      return [];
+    }
+  }
+
+  async getMembers(subscriptionId: string): Promise<any[]> {
+    try {
+      return await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/${subscriptionId}/members`));
+    } catch (err) {
+      console.error('Error fetching members:', err);
+      return [];
+    }
+  }
+
+  async addMember(subscriptionId: string, userId: string): Promise<boolean> {
+    try {
+      await firstValueFrom(this.http.post(`${this.apiUrl}/${subscriptionId}/members`, { userId }));
+      return true;
+    } catch (err) {
+      console.error('Error adding member:', err);
+      return false;
+    }
+  }
+
+  async removeMember(subscriptionId: string, userId: string): Promise<boolean> {
+    try {
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/${subscriptionId}/members/${userId}`));
+      return true;
+    } catch (err) {
+      console.error('Error removing member:', err);
+      return false;
+    }
+  }
 }
 
 export interface ActiveSubscription {

@@ -1,0 +1,248 @@
+<div class="min-h-screen bg-background p-6 lg:p-10 animate-in fade-in duration-500">
+  
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="space-y-1">
+      <h1 class="text-3xl font-extrabold tracking-tight text-foreground">Conceptos de Entrenamiento</h1>
+      <p class="text-muted-foreground text-sm">
+        Organiza y gestiona las técnicas y fundamentos de baloncesto
+      </p>
+    </div>
+    
+    <div class="flex gap-2">
+      <button 
+        (click)="openCategoryModal()"
+        class="btn btn-outline border-primary text-primary hover:bg-primary hover:text-primary-foreground gap-2 px-4 py-2 rounded-xl font-bold transition-all duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+        Nueva Categoría
+      </button>
+      <button 
+        (click)="openConceptModal()"
+        [disabled]="!selectedCategory()"
+        class="btn btn-primary shadow-lg shadow-primary/20 gap-2 px-6 py-2 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        Nuevo Concepto
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content: Two Column Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Left Column: Category Tree -->
+    <div class="lg:col-span-4 xl:col-span-3">
+      <div class="bg-card border border-border rounded-2xl p-4 sticky top-4">
+        <h2 class="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Categorías
+        </h2>
+
+        @if (loading()) {
+          <div class="space-y-2">
+            @for (i of [1,2,3,4,5]; track i) {
+              <div class="h-10 rounded-lg bg-muted/50 animate-pulse"></div>
+            }
+          </div>
+        } @else if (categories().length === 0) {
+          <div class="text-center py-8 text-muted-foreground">
+            <p class="text-sm">No hay categorías aún</p>
+            <button 
+              (click)="openCategoryModal()"
+              class="text-primary text-sm font-bold hover:underline mt-2">
+              Crear primera categoría
+            </button>
+          </div>
+        } @else {
+          <div class="space-y-1">
+            <ng-container *ngTemplateOutlet="categoryTree; context: { categories: categories(), level: 0 }"></ng-container>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right Column: Concepts List -->
+    <div class="lg:col-span-8 xl:col-span-9">
+      @if (!selectedCategory()) {
+        <!-- No category selected -->
+        <div class="flex flex-col items-center justify-center py-20 text-center space-y-4 border-2 border-dashed border-border/50 rounded-3xl bg-card/30">
+          <div class="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-6-6m6 6v-4.8m0 4.8h-4.8"/><path d="M3 16.2V21m0 0h4.8M3 21l6-6"/><path d="M21 7.8V3m0 0h-4.8M21 3l-6 6"/><path d="M3 7.8V3m0 0h4.8M3 3l6 6"/></svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-foreground">Selecciona una categoría</h3>
+            <p class="text-muted-foreground text-sm max-w-xs mx-auto">
+              Haz clic en una categoría del árbol para ver sus conceptos
+            </p>
+          </div>
+        </div>
+      } @else {
+        <!-- Category selected, show concepts -->
+        <div class="space-y-4">
+          <!-- Selected category header -->
+          <div class="bg-card border border-border rounded-2xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">{{ getCategoryIcon(selectedCategory()!.name) }}</span>
+              <div>
+                <h2 class="text-xl font-bold text-foreground">{{ selectedCategory()!.name }}</h2>
+                @if (selectedCategory()!.description) {
+                  <p class="text-sm text-muted-foreground">{{ selectedCategory()!.description }}</p>
+                }
+              </div>
+            </div>
+            <button 
+              (click)="openConceptModal()"
+              class="btn btn-primary btn-sm gap-1 rounded-lg font-bold">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              Añadir
+            </button>
+          </div>
+
+          <!-- Concepts grid -->
+          @if (loadingConcepts()) {
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              @for (i of [1,2,3]; track i) {
+                <div class="h-32 rounded-2xl bg-card/50 animate-pulse border border-border/50"></div>
+              }
+            </div>
+          } @else if (concepts().length === 0) {
+            <div class="flex flex-col items-center justify-center py-16 text-center space-y-4 border-2 border-dashed border-border/50 rounded-2xl bg-card/30">
+              <div class="w-14 h-14 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-foreground">Sin conceptos</h3>
+                <p class="text-muted-foreground text-sm">
+                  Esta categoría aún no tiene conceptos
+                </p>
+              </div>
+              <button 
+                (click)="openConceptModal()"
+                class="text-primary font-bold text-sm hover:underline">
+                Crear primer concepto
+              </button>
+            </div>
+          } @else {
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              @for (concept of concepts(); track concept.id) {
+                <div 
+                  class="group bg-card border border-border hover:border-primary/50 rounded-2xl p-5 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 cursor-pointer"
+                  (click)="openConceptModal(concept)">
+                  
+                  <div class="space-y-3">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between">
+                      <h3 class="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                        {{ concept.name }}
+                      </h3>
+                      @if (concept.isSystem) {
+                        <span class="px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] uppercase font-black tracking-wider">
+                          Sistema
+                        </span>
+                      }
+                    </div>
+
+                    <!-- Description -->
+                    @if (concept.description) {
+                      <p class="text-sm text-muted-foreground line-clamp-2">
+                        {{ concept.description }}
+                      </p>
+                    }
+
+                    <!-- Footer -->
+                    <div class="pt-3 border-t border-border/50 flex items-center justify-between">
+                      <!-- Difficulty -->
+                      <div class="flex items-center gap-1">
+                        <span class="text-xs text-muted-foreground">Dificultad:</span>
+                        <span [class]="getDifficultyColor(concept.difficultyLevel)" class="text-sm">
+                          {{ getDifficultyStars(concept.difficultyLevel) }}
+                        </span>
+                      </div>
+
+                      <!-- Has video indicator -->
+                      @if (concept.videoUrl) {
+                        <div class="flex items-center gap-1 text-muted-foreground">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Modals -->
+  @if (showCategoryModal()) {
+    <app-create-category-modal
+      [category]="editingCategory()"
+      [parentCategory]="selectedCategory()"
+      (close)="closeCategoryModal()"
+      (categorySaved)="onCategorySaved()">
+    </app-create-category-modal>
+  }
+
+  @if (showConceptModal()) {
+    <app-create-concept-modal
+      [concept]="editingConcept()"
+      [category]="selectedCategory()"
+      (close)="closeConceptModal()"
+      (conceptSaved)="onConceptSaved()">
+    </app-create-concept-modal>
+  }
+</div>
+
+<!-- Category Tree Template -->
+<ng-template #categoryTree let-categories="categories" let-level="level">
+  @for (category of categories; track category.id) {
+    <div>
+      <!-- Category item -->
+      <div 
+        class="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all duration-200"
+        [class.bg-primary/10]="selectedCategory()?.id === category.id"
+        [class.text-primary]="selectedCategory()?.id === category.id"
+        [class.hover:bg-muted]="selectedCategory()?.id !== category.id"
+        [style.padding-left.px]="12 + level * 16"
+        (click)="selectCategory(category)">
+        
+        <!-- Expand/Collapse button -->
+        @if (category.children && category.children.length > 0) {
+          <button 
+            class="w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+            (click)="toggleCategory(category.id); $event.stopPropagation()">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              class="w-4 h-4 transition-transform duration-200"
+              [class.rotate-90]="isCategoryExpanded(category.id)"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        } @else {
+          <span class="w-5"></span>
+        }
+
+        <!-- Icon -->
+        <span class="text-base">{{ getCategoryIcon(category.name) }}</span>
+        
+        <!-- Name -->
+        <span class="text-sm font-medium flex-1 truncate">{{ category.name }}</span>
+
+        <!-- System badge -->
+        @if (category.isSystem) {
+          <span class="w-2 h-2 rounded-full bg-secondary" title="Sistema"></span>
+        }
+      </div>
+
+      <!-- Children -->
+      @if (category.children && category.children.length > 0 && isCategoryExpanded(category.id)) {
+        <div class="animate-in slide-in-from-top-1 duration-200">
+          <ng-container *ngTemplateOutlet="categoryTree; context: { categories: category.children, level: level + 1 }"></ng-container>
+        </div>
+      }
+    </div>
+  }
+</ng-template>

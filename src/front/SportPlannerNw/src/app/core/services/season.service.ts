@@ -8,6 +8,8 @@ export interface Season {
   subscriptionId: string;
   name: string;
   isActive: boolean;
+  startDate: string;
+  endDate?: string;
 }
 
 @Injectable({
@@ -44,5 +46,14 @@ export class SeasonService {
       startDate,
       endDate: endDate || null
     }));
+  }
+
+  async updateSeason(userId: string, seasonId: string, name: string, startDate: string, endDate: string): Promise<Season> {
+    const payload = { userId, name, startDate, endDate };
+    return await firstValueFrom(this.http.put<Season>(`${this.apiUrl}/${seasonId}`, payload));
+  }
+
+  async setActiveSeason(userId: string, seasonId: string): Promise<Season> {
+    return await firstValueFrom(this.http.put<Season>(`${this.apiUrl}/${seasonId}/activate`, { userId }));
   }
 }

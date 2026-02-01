@@ -9,6 +9,8 @@ public interface ISeasonService
     Task<SeasonResponse?> GetActiveSeasonAsync(string userId);
     Task<IEnumerable<SeasonResponse>> GetSeasonsAsync(string userId);
     Task<SeasonResponse> CreateSeasonAsync(CreateSeasonRequest request);
+    Task<SeasonResponse> UpdateSeasonAsync(string userId, string seasonId, UpdateSeasonRequest request);
+    Task<SeasonResponse> SetActiveSeasonAsync(string userId, string seasonId);
 }
 
 public class SeasonService : ISeasonService
@@ -92,5 +94,80 @@ public class SeasonService : ISeasonService
             throw new Exception("Error al guardar la temporada.");
 
         return new SeasonResponse(response.Model.Id, response.Model.SubscriptionId, response.Model.Name, response.Model.IsActive);
+    }
+
+    public async Task<SeasonResponse> UpdateSeasonAsync(string userId, string seasonId, UpdateSeasonRequest request)
+    {
+        await _supabase.InitializeAsync();
+
+        // 1. Verificar propiedad a través de la suscripción
+        var subResponse = await _supabase.From<SubscriptionModel>()
+            .Filter("owner_id", Constants.Operator.Equals, userId)
+            .Single();
+
+        if (subResponse == null)
+            throw new Exception("Suscripción no encontrada.");
+
+        // 2. Obtener la temporada
+        var seasonResponse = await _supabase.From<SeasonModel>()
+            .Filter("id", Constants.Operator.Equals, seasonId)
+            .Filter("subscription_id", Constants.Operator.Equals, subResponse.Id)
+            .Single();
+
+        if (seasonResponse == null)
+            throw new Exception("Temporada no encontrada o no tienes permisos.");
+
+        // 3. Actualizar
+        seasonResponse.Name = request.Name;
+        seasonResponse.StartDate = request.StartDate;
+        seasonResponse.EndDate = request.EndDate;
+
+        var updateResponse = await _supabase.From<SeasonModel>().Update(seasonResponse);
+
+        if (updateResponse.Model == null)
+            throw new Exception("Error al actualizar la temporada.");
+
+        return new SeasonResponse(updateResponse.Model.Id, updateResponse.Model.SubscriptionId, updateResponse.Model.Name, updateResponse.Model.IsActive);
+    }
+    public async Task<SeasonResponse> SetActiveSeasonAsync(string userId, string seasonId)
+    {
+        await _supabase.InitializeAsync();
+
+        // 1. Obtener la suscripción
+        var subResponse = await _supabase.From<SubscriptionModel>()
+            .Filter("owner_id", Constants.Operator.Equals, userId)
+            .Filter("status", Constants.Operator.Equals, "active")
+            .Single();
+
+        if (subResponse == null)
+            throw new Exception("Suscripción no encontrada.");
+
+        // 2. Obtener todas las temporadas de la suscripción
+        var seasonsResponse = await _supabase.From<SeasonModel>()
+            .Filter("subscription_id", Constants.Operator.Equals, subResponse.Id)
+            .Get();
+
+        var seasons = seasonsResponse.Models;
+        var targetSeason = seasons.FirstOrDefault(s => s.Id == seasonId);
+
+        if (targetSeason == null)
+            throw new Exception("Temporada no encontrada.");
+
+        // 3. Desactivar todas las temporadas excepto la objetivo
+        foreach (var season in seasons)
+        {
+            if (season.Id == seasonId)
+            {
+                season.IsActive = true;
+                await _supabase.From<SeasonModel>().Update(season);
+            }
+            else if (season.IsActive)
+            {
+                season.IsActive = false;
+                await _supabase.From<SeasonModel>().Update(season);
+            }
+        }
+
+        return new SeasonResponse(targetSeason.Id, targetSeason.SubscriptionId, targetSeason.Name, true);
     }
 }

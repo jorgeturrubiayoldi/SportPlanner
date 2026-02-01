@@ -4,13 +4,30 @@
     "LANGUAGE": "Idioma",
     "OPTIONAL": "(Opcional)"
   },
+  "SEASONS": {
+    "DESCRIPTION": "Gestiona y organiza tus temporadas deportivas",
+    "CREATE": "Nueva Temporada",
+    "NAME": "Nombre",
+    "STATUS": "Estado",
+    "ACTIONS": "Acciones",
+    "NO_SEASONS": "No hay temporadas creadas",
+    "CREATE_FIRST_HINT": "Crea tu primera temporada para comenzar a organizar tu equipo",
+    "ACTIVE": "Activa",
+    "INACTIVE": "Inactiva",
+    "SET_ACTIVE": "Activar",
+    "CURRENTLY_ACTIVE": "En uso"
+  },
   "MENU": {
     "DASHBOARD": "Tablero",
     "TEAMS": "Equipos",
     "PLAYERS": "Jugadores",
     "PLANNING": "Planificaciones",
     "EXERCISES": "Ejercicios",
-    "MARKETPLACE": "Marketplace"
+    "MARKETPLACE": "Marketplace",
+    "SETTINGS": "Ajustes",
+    "SEASONS": "Temporadas",
+    "CONCEPTS": "Conceptos",
+    "CATEGORIES": "Categorías"
   }
   ,
   "TEAMS": {

@@ -22,6 +22,7 @@ builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISeasonService, SeasonService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IConceptService, ConceptService>();
 
 // CORS Configuration
 builder.Services.AddCors(options =>

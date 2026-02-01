@@ -49,9 +49,27 @@ export const routes: Routes = [
         path: 'ejercicios',
         redirectTo: 'dashboard'
       },
+
       {
         path: 'marketplace',
         redirectTo: 'dashboard'
+      },
+      {
+        path: 'ajustes',
+        children: [
+          {
+            path: 'temporadas',
+            loadComponent: () => import('./settings/seasons/seasons.component').then(m => m.SeasonsComponent),
+          },
+          {
+            path: 'conceptos',
+            loadComponent: () => import('./concepts/concepts.component').then(m => m.ConceptsComponent),
+          },
+          {
+            path: '**',
+            redirectTo: 'temporadas'
+          }
+        ]
       }
     ]
   },

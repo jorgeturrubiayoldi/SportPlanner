@@ -10,6 +10,12 @@ public interface ISubscriptionService
     Task<SubscriptionResponse> CreateSubscriptionAsync(SubscribeRequest request);
     Task<bool> CheckSubscriptionStatusAsync(string userId);
     Task<ActiveSubscriptionResponse?> GetActiveSubscriptionAsync(string userId);
+    
+    // Invoices and Members
+    Task<List<InvoiceResponse>> GetInvoicesAsync(string subscriptionId);
+    Task<List<UserProfileResponse>> GetSubscriptionMembersAsync(string subscriptionId);
+    Task AddSubscriptionMemberAsync(string subscriptionId, string userId);
+    Task RemoveSubscriptionMemberAsync(string subscriptionId, string userId);
 }
 
 public class SubscriptionService : ISubscriptionService
@@ -156,5 +162,77 @@ public class SubscriptionService : ISubscriptionService
             Console.WriteLine($"Error getting active subscription for {userId}: {ex.Message}");
             return null;
         }
+    }
+
+    public async Task<List<InvoiceResponse>> GetInvoicesAsync(string subscriptionId)
+    {
+        var response = await _supabase.From<InvoiceModel>()
+            .Filter("subscription_id", Constants.Operator.Equals, subscriptionId)
+            .Order("created_at", Constants.Ordering.Descending)
+            .Get();
+            
+        return response.Models.Select(i => new InvoiceResponse(
+            i.Id,
+            i.SubscriptionId,
+            i.InvoiceNumber,
+            i.Amount,
+            i.Currency,
+            i.Status,
+            i.DueDate,
+            i.PaidAt,
+            i.PaymentMethod,
+            i.Description
+        )).ToList();
+    }
+
+    public async Task<List<UserProfileResponse>> GetSubscriptionMembersAsync(string subscriptionId)
+    {
+        // 1. Get member user_ids
+        var membersResponse = await _supabase.From<SubscriptionMemberModel>()
+            .Filter("subscription_id", Constants.Operator.Equals, subscriptionId)
+            .Get();
+
+        if (!membersResponse.Models.Any()) return new List<UserProfileResponse>();
+
+        var userIds = membersResponse.Models.Select(m => m.UserId).ToList();
+
+        // 2. Get user profiles
+        var usersResponse = await _supabase.From<UserProfileModel>()
+            .Get(); // Postgrest-csharp doesn't support "In" easily on all versions, filtering in memory for now or simple manual query if updated
+                    // Optimization: ideally use .Filter("id", Operator.In, userIds) if supported by library version
+
+        // Naive clean filtering and map to DTOs
+        return usersResponse.Models
+            .Where(u => userIds.Contains(u.Id))
+            .Select(u => new UserProfileResponse(
+                u.Id,
+                u.FullName,
+                u.AvatarUrl,
+                u.Language
+            ))
+            .ToList();
+    }
+
+    public async Task AddSubscriptionMemberAsync(string subscriptionId, string userId)
+    {
+        var member = new SubscriptionMemberModel
+        {
+            SubscriptionId = subscriptionId,
+            UserId = userId,
+            Role = "member"
+        };
+
+        await _supabase.From<SubscriptionMemberModel>().Insert(member);
+    }
+    
+    // overload or clarification: The interface said 'string email'. I should probably support ID. 
+    // Let's rename argument to 'userIdOrEmail' and try to treat as ID first.
+    
+    public async Task RemoveSubscriptionMemberAsync(string subscriptionId, string userId)
+    {
+         await _supabase.From<SubscriptionMemberModel>()
+            .Filter("subscription_id", Constants.Operator.Equals, subscriptionId)
+            .Filter("user_id", Constants.Operator.Equals, userId)
+            .Delete();
     }
 }

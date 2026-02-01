@@ -43,4 +43,32 @@ public class SeasonController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    [HttpPut("{seasonId}")]
+    public async Task<IActionResult> UpdateSeason(string seasonId, [FromBody] UpdateSeasonRequest request)
+    {
+        try
+        {
+            var season = await _seasonService.UpdateSeasonAsync(request.UserId, seasonId, request);
+            return Ok(season);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{seasonId}/activate")]
+    public async Task<IActionResult> SetActiveSeason(string seasonId, [FromBody] ActivateSeasonRequest request)
+    {
+        try
+        {
+            var season = await _seasonService.SetActiveSeasonAsync(request.UserId, seasonId);
+            return Ok(season);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }
