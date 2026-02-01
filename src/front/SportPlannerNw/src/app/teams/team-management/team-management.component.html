@@ -42,38 +42,54 @@
         <div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div class="flex items-center justify-between">
             <h2 class="text-xl font-bold tracking-tight">{{ 'TEAMS.MANAGEMENT.PLAYERS.TITLE' | translate }}</h2>
-            <button class="btn btn-sm btn-outline gap-2">
+            <button (click)="openCreatePlayerModal()" class="btn btn-sm btn-secondary gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
               {{ 'TEAMS.MANAGEMENT.PLAYERS.ADD' | translate }}
             </button>
           </div>
           
-          <!-- Empty State / Placeholder -->
-          <div class="flex flex-col items-center justify-center py-16 text-center space-y-4 border-2 border-dashed border-border/40 rounded-2xl bg-card/20">
-            <div class="p-4 rounded-full bg-muted/50">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground/60"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          @if (loadingPlayers()) {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+               <div class="h-24 rounded-2xl bg-card/50 animate-pulse border border-border/50"></div>
+               <div class="h-24 rounded-2xl bg-card/50 animate-pulse border border-border/50"></div>
+               <div class="h-24 rounded-2xl bg-card/50 animate-pulse border border-border/50"></div>
             </div>
-            <p class="text-muted-foreground text-sm max-w-sm">
-              {{ 'TEAMS.MANAGEMENT.PLAYERS.EMPTY' | translate }}
-            </p>
-          </div>
+          } @else if (players().length === 0) {
+              <!-- Empty State -->
+              <div class="flex flex-col items-center justify-center py-16 text-center space-y-4 border-2 border-dashed border-border/40 rounded-2xl bg-card/20">
+                <div class="p-4 rounded-full bg-muted/50">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground/60"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <p class="text-muted-foreground text-sm max-w-sm">
+                  {{ 'TEAMS.MANAGEMENT.PLAYERS.EMPTY' | translate }}
+                </p>
+                <button (click)="openCreatePlayerModal()" class="text-secondary font-bold text-sm hover:underline">
+                    {{ 'TEAMS.MANAGEMENT.PLAYERS.ADD' | translate }}
+                </button>
+              </div>
+          } @else {
+              <!-- Player Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  @for (player of players(); track player.id) {
+                      <div class="p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 flex items-center gap-4 group">
+                          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+                              @if (player.number) {
+                                  {{ player.number }}
+                              } @else {
+                                  {{ player.name.charAt(0).toUpperCase() }}
+                              }
+                          </div>
+                          <div>
+                              <h3 class="font-bold text-foreground group-hover:text-primary transition-colors text-sm">{{ player.name }} {{ player.lastName }}</h3>
+                              <p class="text-xs text-muted-foreground">{{ player.position || 'Sin posición' }}</p>
+                          </div>
+                      </div>
+                  }
+              </div>
+          }
         </div>
       }
-      @case ('coaches') {
-        <div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold tracking-tight">{{ 'TEAMS.MANAGEMENT.COACHES.TITLE' | translate }}</h2>
-          </div>
-          <div class="flex flex-col items-center justify-center py-16 text-center space-y-4 border-2 border-dashed border-border/40 rounded-2xl bg-card/20">
-             <div class="p-4 rounded-full bg-muted/50">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground/60"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
-            </div>
-            <p class="text-muted-foreground text-sm max-w-sm">
-              {{ 'TEAMS.MANAGEMENT.COACHES.EMPTY' | translate }}
-            </p>
-          </div>
-        </div>
-      }
+
       @case ('planning') {
         <div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
            <div class="flex items-center justify-between">
@@ -107,4 +123,11 @@
     }
   </div>
 
+  @if (showCreatePlayerModal()) {
+    <app-create-player-modal 
+      [teamId]="teamId()" 
+      (close)="closeCreatePlayerModal()"
+      (playerCreated)="onPlayerCreated()"
+    ></app-create-player-modal>
+  }
 </div>

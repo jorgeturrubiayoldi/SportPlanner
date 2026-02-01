@@ -147,4 +147,22 @@ export class TeamService {
 
     return team;
   }
+  // --- Player Operations ---
+  
+  async getPlayersByTeam(teamId: string): Promise<any[]> {
+    try {
+      return await firstValueFrom(this.http.get<any[]>(`${environment.apiUrl}/Player/team/${teamId}`)) || [];
+    } catch (error) {
+      console.error('Error fetching players:', error);
+      return [];
+    }
+  }
+
+  async createPlayer(playerData: any): Promise<any> {
+    return await firstValueFrom(this.http.post<any>(`${environment.apiUrl}/Player`, playerData));
+  }
+
+  async deletePlayer(playerId: string): Promise<void> {
+     await firstValueFrom(this.http.delete(`${environment.apiUrl}/Player/${playerId}`));
+  }
 }

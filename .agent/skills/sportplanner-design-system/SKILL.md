@@ -56,7 +56,14 @@ Estas variables cambian automáticamente según la clase `.dark` (Tailwind Nativ
 ## 🧩 Biblioteca de Componentes
 
 ### Botones (Buttons)
-*   *Pendiente de definición...*
+*   **Acciones de Creación/Alta (Create/Add)**: Deben usar **SIEMPRE** el color **Secondary** (Naranja Corporativo).
+    *   Clase: `.btn-secondary`
+    *   Ejemplos: "Nueva Temporada", "Añadir Jugador", "Crear Equipo".
+    *   *Razón*: Diferenciar las acciones principales de creación del resto de la interfaz.
+*   **Acciones Principales (General)**: Para otras acciones principales que no sean de creación, usar **Primary** (Esmeralda).
+    *   Clase: `.btn-primary`
+*   **Acciones Secundarias/Neutras**: Usar estilo `outline` o `ghost`.
+    *   Clase: `.btn-outline` o `.btn-ghost`
 
 ### Inputs
 *   *Pendiente de definición...*

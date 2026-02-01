@@ -11,7 +11,7 @@
     
     <button 
       (click)="openCreateModal()"
-      class="btn btn-primary shadow-lg shadow-primary/20 gap-2 px-6 py-2.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all duration-200">
+      class="btn btn-secondary shadow-lg shadow-secondary/20 gap-2 px-6 py-2.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all duration-200">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
       {{ 'TEAMS.NEW_TEAM_BUTTON' | translate }}
     </button>
@@ -37,7 +37,7 @@
       </div>
       <button 
         (click)="openCreateModal()"
-        class="text-primary font-bold text-sm hover:underline">
+        class="text-secondary font-bold text-sm hover:underline">
         {{ 'TEAMS.EMPTY_STATE.BUTTON' | translate }}
       </button>
     </div>
@@ -80,8 +80,12 @@
               
               <button 
                 [routerLink]="['/teams', team.id, 'manage']"
-                class="w-full btn btn-sm btn-secondary font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
-                {{ 'TEAMS.CARD.MANAGE_BUTTON' | translate }}
+                class="w-full relative group overflow-hidden rounded-xl bg-card border border-orange-500 hover:border-orange-600 text-foreground px-4 py-2.5 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:-translate-y-0.5">
+                <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span class="relative flex items-center justify-center gap-2 font-bold text-sm group-hover:text-primary transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                  {{ 'TEAMS.CARD.MANAGE_BUTTON' | translate }}
+                </span>
               </button>
             </div>
           </div>

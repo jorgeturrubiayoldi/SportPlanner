@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SeasonService, Season } from '../../core/services/season.service';
@@ -9,7 +9,8 @@ import { CreateSeasonModalComponent } from '../../shared/components/create-seaso
   selector: 'app-seasons',
   standalone: true,
   imports: [CommonModule, TranslateModule, CreateSeasonModalComponent],
-  templateUrl: './seasons.component.html'
+  templateUrl: './seasons.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SeasonsComponent implements OnInit {
   private seasonService = inject(SeasonService);

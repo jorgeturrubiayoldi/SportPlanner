@@ -4,6 +4,12 @@
     "LANGUAGE": "Language",
     "OPTIONAL": "(Optional)"
   },
+  "POSITIONS": {
+    "GOALKEEPER": "Goalkeeper",
+    "DEFENDER": "Defender",
+    "MIDFIELDER": "Midfielder",
+    "FORWARD": "Forward"
+  },
   "SEASONS": {
     "DESCRIPTION": "Manage and organize your sports seasons",
     "CREATE": "New Season",
@@ -100,7 +106,21 @@
       "NO_ACTIVE_SEASON": "No active season found.",
       "REQUIRED_FIELDS": "Name, Gender, and Category are required.",
       "CREATE_ERROR": "Error creating team."
+    },
+    "PLAYERS": {
+      "CREATE_MODAL": {
+        "TITLE": "New Player",
+        "SUBTITLE": "Add a player to the squad",
+        "NAME": "Name",
+        "NAME_PLACEHOLDER": "Player name",
+        "LASTNAME": "Last Name",
+        "LASTNAME_PLACEHOLDER": "Last name",
+        "POSITION": "Position",
+        "SELECT_POSITION": "Select position",
+        "NUMBER": "Number",
+        "EMAIL": "Email",
+        "EMAIL_PLACEHOLDER": "email@example.com"
+      }
     }
   }
-
 }

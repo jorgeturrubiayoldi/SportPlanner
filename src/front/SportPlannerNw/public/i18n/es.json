@@ -4,6 +4,12 @@
     "LANGUAGE": "Idioma",
     "OPTIONAL": "(Opcional)"
   },
+  "POSITIONS": {
+    "GOALKEEPER": "Portero",
+    "DEFENDER": "Defensa",
+    "MIDFIELDER": "Centrocampista",
+    "FORWARD": "Delantero"
+  },
   "SEASONS": {
     "DESCRIPTION": "Gestiona y organiza tus temporadas deportivas",
     "CREATE": "Nueva Temporada",
@@ -100,6 +106,21 @@
       "NO_ACTIVE_SEASON": "No se encontró una temporada activa.",
       "REQUIRED_FIELDS": "Nombre, Género y Categoría son obligatorios.",
       "CREATE_ERROR": "Error al crear el equipo."
+    },
+    "PLAYERS": {
+      "CREATE_MODAL": {
+        "TITLE": "Nuevo Jugador",
+        "SUBTITLE": "Añade un jugador a la plantilla",
+        "NAME": "Nombre",
+        "NAME_PLACEHOLDER": "Nombre del jugador",
+        "LASTNAME": "Apellidos",
+        "LASTNAME_PLACEHOLDER": "Apellidos",
+        "POSITION": "Posición",
+        "SELECT_POSITION": "Selecciona posición",
+        "NUMBER": "Dorsal",
+        "EMAIL": "Email",
+        "EMAIL_PLACEHOLDER": "correo@ejemplo.com"
+      }
     }
   }
 }

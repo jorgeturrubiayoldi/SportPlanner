@@ -116,6 +116,10 @@
     @apply bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:translate-y-[-2px];
     --tw-shadow-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
   }
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-lg hover:translate-y-[-2px];
+    --tw-shadow-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+  }
   .btn-ghost {
     @apply hover:bg-accent hover:text-accent-foreground text-foreground;
   }

@@ -1,4 +1,5 @@
 using SportPlannerNW.Services;
+using Supabase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,13 +8,16 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Supabase Configuration - use ServiceKey to bypass RLS
+// Supabase Configuration - use ServiceKey to bypass RLS
 var supabaseUrl = builder.Configuration["Supabase:Url"];
-var supabaseServiceKey = builder.Configuration["Supabase:ServiceKey"];
+var supabaseServiceKey = builder.Configuration["Supabase:ServiceKey"]; // Ensure this is the SERVICE_ROLE key
+
 builder.Services.AddScoped<Supabase.Client>(_ => 
     new Supabase.Client(supabaseUrl!, supabaseServiceKey!, new Supabase.SupabaseOptions
     {
         AutoRefreshToken = false,
-        AutoConnectRealtime = false
+        AutoConnectRealtime = false,
+        SessionHandler = new NoOpSessionHandler() 
     }));
 
 // Services Registration
@@ -23,6 +27,7 @@ builder.Services.AddScoped<ISeasonService, SeasonService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IConceptService, ConceptService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 // CORS Configuration
 builder.Services.AddCors(options =>
