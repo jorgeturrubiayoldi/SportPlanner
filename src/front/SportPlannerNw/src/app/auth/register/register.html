@@ -1,149 +1,147 @@
 <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-background p-4">
-    <!-- Background Decor -->
-    <div class="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl bg-primary/20 pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
-    <div class="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl bg-secondary/10 pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
+    <!-- Background Decor (Animated) -->
+    <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full blur-3xl bg-primary/20 pointer-events-none animate-pulse"></div>
+    <div class="absolute -bottom-20 -left-20 w-96 h-96 rounded-full blur-3xl bg-secondary/10 pointer-events-none animate-pulse" style="animation-delay: 2s"></div>
+    
+    <!-- Grid Pattern Overlay -->
+    <div class="absolute inset-0 bg-[url('/assets/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] pointer-events-none opacity-20"></div>
 
-    <div class="w-full max-w-md relative z-10">
-        <div class="glass-card p-8 md:p-10 space-y-8">
+    <div class="w-full max-w-lg relative z-10 transition-all duration-500" [class.scale-95]="loading()" [class.opacity-50]="loading()">
+        <div class="glass-card p-8 md:p-10 space-y-6 border border-white/10 shadow-2xl">
             <div class="text-center space-y-2">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2 border border-primary/20">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 text-primary" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                </div>
                 <h1 class="text-3xl font-bold tracking-tight text-foreground">
-                    Crea tu cuenta
+                    Únete a la <span class="text-primary">Élite</span>
                 </h1>
                 <p class="text-muted-foreground text-sm">
-                    Empieza a gestionar tu éxito deportivo
+                    Configura tu centro de mando deportivo
                 </p>
             </div>
 
-            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Full Name -->
-                <div class="space-y-2">
-                    <label for="fullName" class="text-sm font-medium leading-none text-foreground">
-                        Nombre Completo
-                    </label>
+                <div class="space-y-2 md:col-span-2">
+                    <label for="fullName" class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Nombre del Líder</label>
                     <input
                         id="fullName"
                         type="text"
                         formControlName="fullName"
-                        placeholder="Juan Pérez"
-                        class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
-                        [class.border-destructive]="form.controls.fullName.invalid && form.controls.fullName.touched"
+                        placeholder="Ej. Coach Guardiola"
+                        class="flex h-12 w-full rounded-xl border border-input bg-background/50 px-4 py-2 text-sm text-foreground transition-all focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none"
                     >
-                    @if (form.controls.fullName.invalid && form.controls.fullName.touched) {
-                        <span class="text-xs text-destructive">El nombre es requerido</span>
-                    }
                 </div>
 
                 <!-- Email -->
                 <div class="space-y-2">
-                    <label for="email" class="text-sm font-medium leading-none text-foreground">
-                        Email
-                    </label>
+                    <label for="email" class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Email de Contacto</label>
                     <input
                         id="email"
                         type="email"
                         formControlName="email"
-                        placeholder="entrenador@ejemplo.com"
-                        class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
-                        [class.border-destructive]="form.controls.email.invalid && form.controls.email.touched"
+                        placeholder="coach@team.com"
+                        class="flex h-12 w-full rounded-xl border border-input bg-background/50 px-4 py-2 text-sm text-foreground transition-all focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none"
                     >
-                    @if (form.controls.email.invalid && form.controls.email.touched) {
-                        <span class="text-xs text-destructive">Por favor ingresa un email válido</span>
-                    }
                 </div>
 
                 <!-- Language Selector -->
                 <div class="space-y-2">
-                    <label for="language" class="text-sm font-medium leading-none text-foreground">
-                        Idioma
-                    </label>
+                    <label for="language" class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Idioma de Operaciones</label>
                     <div class="relative">
                         <select
                             id="language"
                             formControlName="language"
-                            class="flex h-10 w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all appearance-none"
+                            class="flex h-12 w-full rounded-xl border border-input bg-background/50 px-4 py-2 text-sm text-foreground transition-all focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none appearance-none"
                         >
                             <option value="es">Español</option>
                             <option value="en">English</option>
                             <option value="fr">Français</option>
                         </select>
-                        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
                     </div>
                 </div>
 
                 <!-- Password -->
                 <div class="space-y-2">
-                    <label for="password" class="text-sm font-medium leading-none text-foreground">
-                        Contraseña
-                    </label>
+                    <label for="password" class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Contraseña</label>
                     <div class="relative">
                         <input
                             id="password"
                             [type]="showPassword() ? 'text' : 'password'"
                             formControlName="password"
-                            class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all pr-12"
-                            [class.border-destructive]="form.controls.password.invalid && form.controls.password.touched"
+                            class="flex h-12 w-full rounded-xl border border-input bg-background/50 px-4 py-2 text-sm text-foreground transition-all focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none pr-12"
                         >
                         <button
                             type="button"
                             (click)="togglePassword()"
                             class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
                         >
-                            <span class="text-[10px] uppercase font-bold tracking-wider">{{ showPassword() ? 'Ocultar' : 'Ver' }}</span>
+                            @if (!showPassword()) {
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            } @else {
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.025 10.025 0 014.132-5.411m0 0L21.213 21.213M15.858 15.858A3 3 0 0112 15c-1.657 0-3-1.343-3-3 0-.672.223-1.29.598-1.789m5.26 5.26l4.217 4.217" />
+                                </svg>
+                            }
                         </button>
                     </div>
-                    @if (form.controls.password.invalid && form.controls.password.touched) {
-                        <span class="text-xs text-destructive">La contraseña debe tener al menos 6 caracteres</span>
-                    }
                 </div>
 
                 <!-- Confirm Password -->
                 <div class="space-y-2">
-                    <label for="confirmPassword" class="text-sm font-medium leading-none text-foreground">
-                        Confirmar Contraseña
-                    </label>
+                    <label for="confirmPassword" class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Verificar</label>
                     <input
                         id="confirmPassword"
                         [type]="showPassword() ? 'text' : 'password'"
                         formControlName="confirmPassword"
-                        class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
-                        [class.border-destructive]="form.controls.confirmPassword.invalid && form.controls.confirmPassword.touched"
+                        class="flex h-12 w-full rounded-xl border border-input bg-background/50 px-4 py-2 text-sm text-foreground transition-all focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none"
                     >
-                    @if (form.controls.confirmPassword.hasError('passwordMismatch') && form.controls.confirmPassword.touched) {
-                        <span class="text-xs text-destructive">Las contraseñas no coinciden</span>
-                    }
                 </div>
 
-                <!-- Error Message -->
-                @if (errorMessage()) {
-                    <div class="bg-destructive/10 border border-destructive/20 rounded-md p-3 text-sm text-destructive">
-                        {{ errorMessage() }}
+                <!-- Error Messages -->
+                @if (errorMessage() || (form.controls.confirmPassword.hasError('passwordMismatch') && form.controls.confirmPassword.touched)) {
+                    <div class="md:col-span-2 bg-destructive/10 border border-destructive/20 rounded-xl p-3 text-xs text-destructive flex items-center gap-2 animate-shake">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        <span>{{ errorMessage() || 'Las contraseñas no coinciden' }}</span>
                     </div>
                 }
 
-                <div class="pt-2">
+                <div class="md:col-span-2 pt-2">
                     <button
                         type="submit"
                         [disabled]="form.invalid || loading()"
-                        class="btn btn-primary w-full shadow-lg shadow-primary/20 relative"
+                        class="h-12 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl w-full font-bold shadow-lg shadow-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none relative overflow-hidden group"
                     >
+                        <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                         @if (loading()) {
-                            <span class="opacity-0">Crear Cuenta</span>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                            <div class="flex items-center justify-center gap-2">
+                                <div class="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                                <span>Inscribiendo...</span>
                             </div>
                         } @else {
-                            <span>Crear Cuenta</span>
+                            <span>Comenzar mi Legado</span>
                         }
                     </button>
                 </div>
             </form>
 
-             <div class="text-center text-sm pt-4">
-                <span class="text-muted-foreground">¿Ya tienes una cuenta? </span>
-                <a routerLink="/auth/login" class="text-primary font-semibold hover:underline cursor-pointer ml-1">
-                    Inicia Sesión
+             <div class="text-center text-sm pt-2">
+                <span class="text-muted-foreground">¿Ya eres parte del equipo? </span>
+                <a routerLink="/auth/login" class="text-primary font-bold hover:underline cursor-pointer ml-1">
+                    Acceder
                 </a>
             </div>
         </div>

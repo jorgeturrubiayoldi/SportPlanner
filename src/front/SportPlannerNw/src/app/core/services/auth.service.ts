@@ -82,14 +82,25 @@ export class AuthService {
         this.http.post<any>(`${this.apiUrl}/register`, { email, password, fullName, language })
       );
 
-      // El registro en el back crea el usuario en Supabase, así que iniciamos sesión
-      // Podríamos recibir el token del back y usar setSession de Supabase
-      await this.supabaseService.getClient().auth.setSession({
-        access_token: response.token,
-        refresh_token: '' // Opcional dependiendo de tu implementación
-      });
+      if (response && response.token) {
+        await this.supabaseService.getClient().auth.setSession({
+          access_token: response.token,
+          refresh_token: response.refreshToken || ''
+        });
 
-      await this.init();
+        this.currentUser.set({
+          id: response.id,
+          email: response.email,
+          fullName: response.fullName,
+          language: response.language,
+          avatarUrl: response.avatarUrl
+        });
+
+        if (response.language) {
+          this.translateService.use(response.language);
+        }
+      }
+
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.error?.message || 'Error al crear la cuenta' };
@@ -105,26 +116,26 @@ export class AuthService {
         this.http.post<any>(`${this.apiUrl}/login`, { email, password })
       );
 
-      // Actualizamos la señal inmediatamente con los datos del backend
       if (response && response.id) {
-        this.currentUser.set({
-          id: response.id,
-          email: response.email,
-          fullName: response.fullName,
-          language: response.language
-        });
-
-        if (response.language) {
-          this.translateService.use(response.language);
-        }
-
-        // Sincronizar sesión con el cliente de Supabase para que los Guards funcionen
-        // El backend nos devuelve el access_token y refresh_token
+        // Actualizamos la sesión de Supabase primero
         if (response.token) {
           await this.supabaseService.getClient().auth.setSession({
             access_token: response.token,
             refresh_token: response.refreshToken || ''
           });
+        }
+
+        // Seteamos el usuario directamente con los datos del backend (Ahorramos 1 llamada)
+        this.currentUser.set({
+          id: response.id,
+          email: response.email,
+          fullName: response.fullName,
+          language: response.language,
+          avatarUrl: response.avatarUrl
+        });
+
+        if (response.language) {
+          this.translateService.use(response.language);
         }
       }
       

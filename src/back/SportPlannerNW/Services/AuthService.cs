@@ -34,7 +34,8 @@ public class AuthService : IAuthService
             session.User.Id!,
             session.User.Email!,
             profile?.FullName ?? session.User.UserMetadata?["fullName"]?.ToString(),
-            profile?.Language,
+            profile?.Language ?? session.User.UserMetadata?["language"]?.ToString(),
+            profile?.AvatarUrl,
             session.AccessToken,
             session.RefreshToken
         );
@@ -56,27 +57,22 @@ public class AuthService : IAuthService
         if (session?.User == null)
             throw new Exception("No se pudo crear el usuario");
 
-        // Verify if we need to manually insert into user_profiles or if a trigger handles it.
-        // Assuming trigger handles it based on auth.users, but we need to ensure 'language' is passed.
-        // If the trigger uses raw_user_meta_data, passing it in options.Data should work if the trigger reads it.
         // Failsafe: Upsert to user_profiles to ensure language is set.
+        var profile = new UserProfileModel 
+        { 
+            Id = session.User.Id!,
+            FullName = fullName,
+            Language = language,
+        };
+        
         try 
         {
-            var profile = new UserProfileModel 
-            { 
-                Id = session.User.Id!,
-                FullName = fullName,
-                Language = language,
-                // AvatarUrl can be null
-            };
-            
             await _supabase.From<UserProfileModel>().Upsert(profile);
         }
         catch (Exception ex)
         {
-            // Log error but don't fail registration if auth worked, 
-            // though keeping profile in sync is important.
-            Console.WriteLine($"Error creating profile: {ex.Message}");
+            // We log but don't fail, as the auth user is already created in Supabase
+            Console.WriteLine($"[AuthService] Warning: Could not upsert user profile: {ex.Message}");
         }
 
         return new AuthResponse(
@@ -84,6 +80,7 @@ public class AuthService : IAuthService
             session.User.Email!,
             fullName,
             language,
+            null,
             session.AccessToken,
             session.RefreshToken
         );

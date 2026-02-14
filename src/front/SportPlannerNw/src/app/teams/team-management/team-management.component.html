@@ -69,20 +69,46 @@
                 </button>
               </div>
           } @else {
-              <!-- Player Grid -->
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <!-- Player Grid (Premium Cards) -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   @for (player of players(); track player.id) {
-                      <div class="p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 flex items-center gap-4 group">
-                          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
-                              @if (player.number) {
-                                  {{ player.number }}
-                              } @else {
-                                  {{ player.name.charAt(0).toUpperCase() }}
-                              }
-                          </div>
-                          <div>
-                              <h3 class="font-bold text-foreground group-hover:text-primary transition-colors text-sm">{{ player.name }} {{ player.lastName }}</h3>
-                              <p class="text-xs text-muted-foreground">{{ player.position || 'Sin posición' }}</p>
+                      <div class="group relative bg-card/40 border border-border/60 hover:border-primary/50 rounded-2xl p-5 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 overflow-hidden">
+                          
+                          <!-- Card Background Accent -->
+                          <div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors pointer-events-none"></div>
+
+                          <div class="relative z-10 flex items-center gap-5">
+                              <!-- Player Image/Number -->
+                              <div class="relative">
+                                  <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-inner group-hover:scale-105 transition-transform duration-300">
+                                      @if (player.number) {
+                                          <span class="text-2xl font-black text-primary tracking-tighter">{{ player.number }}</span>
+                                      } @else {
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                      }
+                                  </div>
+                                  <!-- Status indicator -->
+                                  <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-card"></div>
+                              </div>
+
+                              <!-- Player Info -->
+                              <div class="flex-1 min-w-0">
+                                  <h3 class="font-bold text-foreground group-hover:text-primary transition-colors text-base truncate leading-tight">
+                                      {{ player.name }} {{ player.lastName }}
+                                  </h3>
+                                  <div class="flex items-center gap-2 mt-1">
+                                      <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-secondary/10 text-secondary text-[10px] font-black uppercase tracking-wider border border-secondary/20">
+                                          {{ player.position || 'N/A' }}
+                                      </span>
+                                  </div>
+                              </div>
+                              
+                              <!-- Actions (Hidden by default, shown on hover) -->
+                              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button class="p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                  </button>
+                              </div>
                           </div>
                       </div>
                   }

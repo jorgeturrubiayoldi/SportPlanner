@@ -1,36 +1,43 @@
 <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-background p-4">
-    <!-- Background Decor -->
-    <div class="absolute -top-20 -left-20 w-96 h-96 rounded-full blur-3xl bg-primary/20 pointer-events-none"></div>
-    <div class="absolute -bottom-20 -right-20 w-96 h-96 rounded-full blur-3xl bg-secondary/10 pointer-events-none"></div>
+    <!-- Background Decor (Animated) -->
+    <div class="absolute -top-20 -left-20 w-96 h-96 rounded-full blur-3xl bg-primary/20 pointer-events-none animate-pulse"></div>
+    <div class="absolute -bottom-20 -right-20 w-96 h-96 rounded-full blur-3xl bg-secondary/10 pointer-events-none animate-pulse" style="animation-delay: 2s"></div>
 
-    <div class="w-full max-w-md relative z-10">
-        <div class="glass-card p-8 md:p-10 space-y-8">
+    <div class="w-full max-w-md relative z-10 transition-all duration-500" [class.scale-95]="loading()" [class.opacity-50]="loading()">
+        <div class="glass-card p-8 md:p-10 space-y-8 border border-white/10 shadow-2xl">
             <div class="text-center space-y-2">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4 border border-primary/20">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 text-primary" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                        <path d="M2 17L12 22L22 17" />
+                        <path d="M2 12L12 17L22 12" />
+                    </svg>
+                </div>
                 <h1 class="text-3xl font-bold tracking-tight text-foreground">
                     Bienvenido a <span class="text-primary">SportPlanner</span>
                 </h1>
                 <p class="text-muted-foreground text-sm">
-                    Gestiona tu equipo como un profesional
+                    Gestión deportiva de alto rendimiento
                 </p>
             </div>
 
             <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
                 <!-- Email -->
                 <div class="space-y-2">
-                    <label for="email" class="text-sm font-medium leading-none text-foreground">
+                    <label for="email" class="text-sm font-medium leading-none text-foreground flex justify-between">
                         Email
+                        @if (form.controls.email.invalid && form.controls.email.touched) {
+                            <span class="text-[10px] text-destructive uppercase font-bold tracking-wider">Email inválido</span>
+                        }
                     </label>
                     <input
                         id="email"
                         type="email"
                         formControlName="email"
                         placeholder="entrenador@ejemplo.com"
-                        class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+                        class="flex h-12 w-full rounded-xl border border-input bg-background/50 px-4 py-2 text-sm text-foreground transition-all focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none disabled:opacity-50"
                         [class.border-destructive]="form.controls.email.invalid && form.controls.email.touched"
                     >
-                    @if (form.controls.email.invalid && form.controls.email.touched) {
-                        <span class="text-xs text-destructive">Por favor ingresa un email válido</span>
-                    }
                 </div>
 
                 <!-- Password -->
@@ -39,7 +46,7 @@
                         <label for="password" class="text-sm font-medium leading-none text-foreground">
                             Contraseña
                         </label>
-                        <a href="#" class="text-xs text-primary hover:underline font-medium">
+                        <a href="#" class="text-xs text-primary hover:text-primary/80 font-medium transition-colors">
                             ¿Olvidaste tu contraseña?
                         </a>
                     </div>
@@ -48,21 +55,33 @@
                             id="password"
                             [type]="showPassword() ? 'text' : 'password'"
                             formControlName="password"
-                            class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all pr-12"
+                            class="flex h-12 w-full rounded-xl border border-input bg-background/50 px-4 py-2 text-sm text-foreground transition-all focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none pr-12"
                         >
                         <button
                             type="button"
                             (click)="togglePassword()"
                             class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
                         >
-                            <span class="text-[10px] uppercase font-bold tracking-wider">{{ showPassword() ? 'Ocultar' : 'Ver' }}</span>
+                            @if (!showPassword()) {
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            } @else {
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.025 10.025 0 014.132-5.411m0 0L21.213 21.213M15.858 15.858A3 3 0 0112 15c-1.657 0-3-1.343-3-3 0-.672.223-1.29.598-1.789m5.26 5.26l4.217 4.217" />
+                                </svg>
+                            }
                         </button>
                     </div>
                 </div>
 
                 <!-- Error Message -->
                 @if (errorMessage()) {
-                    <div class="bg-destructive/10 border border-destructive/20 rounded-md p-3 text-sm text-destructive">
+                    <div class="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm text-destructive flex items-center gap-3 animate-shake">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
                         {{ errorMessage() }}
                     </div>
                 }
@@ -70,23 +89,24 @@
                 <button
                     type="submit"
                     [disabled]="form.invalid || loading()"
-                    class="btn btn-primary w-full shadow-lg shadow-primary/20 relative"
+                    class="h-12 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl w-full font-bold shadow-lg shadow-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none relative overflow-hidden group"
                 >
+                    <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                     @if (loading()) {
-                        <span class="opacity-0">Iniciar Sesión</span>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                        <div class="flex items-center justify-center gap-2">
+                            <div class="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                            <span>Autenticando...</span>
                         </div>
                     } @else {
-                        <span>Iniciar Sesión</span>
+                        <span>Entrar en la Arena</span>
                     }
                 </button>
             </form>
 
              <div class="text-center text-sm pt-4">
-                <span class="text-muted-foreground">¿No tienes una cuenta? </span>
-                <a routerLink="/auth/register" class="text-primary font-semibold hover:underline cursor-pointer ml-1">
-                    Regístrate Gratis
+                <span class="text-muted-foreground">¿Aún no tienes equipo? </span>
+                <a routerLink="/auth/register" class="text-primary font-bold hover:underline cursor-pointer ml-1">
+                    Únete Ahora
                 </a>
             </div>
         </div>

@@ -51,7 +51,16 @@ export const routes: Routes = [
       },
       {
         path: 'ejercicios',
-        redirectTo: 'dashboard'
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./exercises/exercises.component').then(m => m.ExercisesComponent),
+          },
+          {
+            path: 'pizarra',
+            loadComponent: () => import('./exercises/whiteboard/whiteboard.component').then(m => m.WhiteboardComponent),
+          }
+        ]
       },
 
       {

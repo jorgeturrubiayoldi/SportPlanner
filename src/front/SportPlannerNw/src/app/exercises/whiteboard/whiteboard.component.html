@@ -1,0 +1,151 @@
+<div class="whiteboard-container">
+  
+  <!-- Top Bar (Floating Style) -->
+  <div class="top-bar glass-panel">
+    <div class="flex items-center gap-4">
+      <button (click)="goBack()" class="p-2 hover:bg-white/10 rounded-xl transition-colors text-white/70 hover:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div>
+        <h1 class="text-lg font-bold text-white leading-tight">Pizarra Táctica</h1>
+        <p class="text-[10px] text-white/40 uppercase font-black tracking-widest">SportPlanner Pro</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button 
+        (click)="clearCanvas()"
+        class="px-4 py-2 rounded-xl text-xs font-bold text-red-400 hover:bg-red-400/10 transition-colors uppercase tracking-wider">
+        Limpiar Todo
+      </button>
+      <button 
+        (click)="saveSnapshot()"
+        class="bg-primary text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+        Guardar Ejercicio
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Canvas Area -->
+  <div class="main-area">
+    
+    <!-- Left Floating Toolbar -->
+    <div class="floating-toolbar tools-left glass-panel">
+      <!-- Brush -->
+      <button 
+        (click)="setTool('brush')"
+        [class.active]="currentTool() === 'brush'"
+        class="tool-btn" title="Pincel">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l5 5"/><path d="M9.5 14.5L16 8"/></svg>
+      </button>
+
+      <!-- Eraser -->
+      <button 
+        (click)="setTool('eraser')"
+        [class.active]="currentTool() === 'eraser'"
+        class="tool-btn" title="Borrador">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 20H7L3 16C2 15 2 13 3 12L13 2L22 11L20 20Z"/><path d="M17 17L7 7"/></svg>
+      </button>
+
+      <!-- Undo -->
+      <button 
+        (click)="undo()"
+        class="tool-btn" title="Deshacer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 14L4 9l5-5"/><path d="M4 9h12a5 5 0 0 1 0 10H7"/></svg>
+      </button>
+
+      <div class="w-full h-px bg-white/10 my-1"></div>
+
+      <!-- Color Palette -->
+      <div class="flex flex-col items-center gap-3 py-2">
+        @for (color of ['#ffffff', '#ef4444', '#3b82f6', '#10b981', '#f59e0b']; track color) {
+          <button 
+            (click)="setColor(color)"
+            [style.backgroundColor]="color"
+            class="color-swatch"
+            [class.active]="currentColor() === color && currentTool() === 'brush'">
+          </button>
+        }
+      </div>
+
+      <!-- Stroke Size -->
+      <div class="flex flex-col items-center gap-2 mt-2">
+        <span class="text-[8px] font-black text-white/30 uppercase tracking-tighter">Size</span>
+        <input 
+          type="range" min="1" max="20" 
+          [value]="brushSize()"
+          (input)="brushSize.set(+$any($event.target).value)"
+          class="vertical-range">
+      </div>
+    </div>
+
+    <!-- Right Background Selector -->
+    <div class="floating-toolbar background-right glass-panel">
+      <span class="text-[8px] font-black text-white/30 uppercase tracking-widest text-center mb-1">Cancha</span>
+      @for (bg of backgrounds; track bg.id) {
+        <button 
+          (click)="selectBackground(bg.id)"
+          [class.active]="selectedBackground() === bg.id"
+          class="bg-btn">
+          <span class="icon">{{ bg.icon }}</span>
+          <span>{{ bg.name }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- Court Drawing Layer -->
+    <div class="court-layer flex items-center justify-center p-12">
+      <div class="w-full h-full border-2 border-white/10 rounded-2xl relative" [ngSwitch]="selectedBackground()">
+        
+        <!-- Basketball SVG -->
+        <svg *ngSwitchCase="'basketball'" viewBox="0 0 100 60" class="w-full h-full stroke-white/20 fill-none" stroke-width="0.5">
+          <rect x="0" y="0" width="100" height="60" rx="2" />
+          <line x1="50" y1="0" x2="50" y2="60" />
+          <circle cx="50" cy="30" r="10" />
+          <!-- Area 1 -->
+          <rect x="0" y="22" width="15" height="16" />
+          <path d="M 15 20 A 10 10 0 0 1 15 40" />
+          <!-- Area 2 -->
+          <rect x="85" y="22" width="15" height="16" />
+          <path d="M 85 20 A 10 10 0 0 0 85 40" />
+          <!-- 3pt lines -->
+          <path d="M 0 5 Q 35 30 0 55" />
+          <path d="M 100 5 Q 65 30 100 55" />
+        </svg>
+
+        <!-- Football SVG -->
+        <svg *ngSwitchCase="'football'" viewBox="0 0 100 60" class="w-full h-full stroke-white/20 fill-none" stroke-width="0.5">
+          <rect x="0" y="0" width="100" height="60" rx="2" />
+          <line x1="50" y1="0" x2="50" y2="60" />
+          <circle cx="50" cy="30" r="8" />
+          <!-- Goals -->
+          <rect x="0" y="18" width="12" height="24" />
+          <rect x="0" y="24" width="5" height="12" />
+          <rect x="88" y="18" width="12" height="24" />
+          <rect x="95" y="24" width="5" height="12" />
+          <!-- Corners -->
+          <path d="M 0 3 A 3 3 0 0 0 3 0" />
+          <path d="M 97 0 A 3 3 0 0 0 100 3" />
+          <path d="M 100 57 A 3 3 0 0 0 97 60" />
+          <path d="M 3 60 A 3 3 0 0 0 0 57" />
+        </svg>
+
+        <!-- Clean Board -->
+        <div *ngSwitchCase="'none'" class="w-full h-full"></div>
+      </div>
+    </div>
+
+    <!-- Interactive Canvas Layer -->
+    <canvas 
+      #canvas
+      (mousedown)="startDrawing($event)"
+      (mousemove)="draw($event)"
+      (mouseup)="stopDrawing()"
+      (mouseleave)="stopDrawing()"
+      (touchstart)="startDrawing($event)"
+      (touchmove)="draw($event)"
+      (touchend)="stopDrawing()">
+    </canvas>
+
+  </div>
+</div>

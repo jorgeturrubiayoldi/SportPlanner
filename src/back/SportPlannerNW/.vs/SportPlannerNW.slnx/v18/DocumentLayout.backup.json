@@ -1,12 +1,71 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Proyectos\\SportPlannerNewVersion\\src\\back\\SportPlannerNW\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D8982F50-0119-E336-10A1-6E13D38848EB}|SportPlannerNW.csproj|c:\\proyectos\\sportplannernewversion\\src\\back\\sportplannernw\\controllers\\marketplacecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D8982F50-0119-E336-10A1-6E13D38848EB}|SportPlannerNW.csproj|solutionrelative:controllers\\marketplacecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D8982F50-0119-E336-10A1-6E13D38848EB}|SportPlannerNW.csproj|c:\\proyectos\\sportplannernewversion\\src\\back\\sportplannernw\\models\\performancemodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D8982F50-0119-E336-10A1-6E13D38848EB}|SportPlannerNW.csproj|solutionrelative:models\\performancemodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D8982F50-0119-E336-10A1-6E13D38848EB}|SportPlannerNW.csproj|c:\\proyectos\\sportplannernewversion\\src\\back\\sportplannernw\\models\\publishedplanmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D8982F50-0119-E336-10A1-6E13D38848EB}|SportPlannerNW.csproj|solutionrelative:models\\publishedplanmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MarketplaceController.cs",
+              "DocumentMoniker": "C:\\Proyectos\\SportPlannerNewVersion\\src\\back\\SportPlannerNW\\Controllers\\MarketplaceController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MarketplaceController.cs",
+              "ToolTip": "C:\\Proyectos\\SportPlannerNewVersion\\src\\back\\SportPlannerNW\\Controllers\\MarketplaceController.cs*",
+              "RelativeToolTip": "Controllers\\MarketplaceController.cs*",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAjwBYAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-14T08:02:53.384Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PublishedPlanModel.cs",
+              "DocumentMoniker": "C:\\Proyectos\\SportPlannerNewVersion\\src\\back\\SportPlannerNW\\Models\\PublishedPlanModel.cs",
+              "RelativeDocumentMoniker": "Models\\PublishedPlanModel.cs",
+              "ToolTip": "C:\\Proyectos\\SportPlannerNewVersion\\src\\back\\SportPlannerNW\\Models\\PublishedPlanModel.cs",
+              "RelativeToolTip": "Models\\PublishedPlanModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-14T08:02:01.708Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PerformanceModels.cs",
+              "DocumentMoniker": "C:\\Proyectos\\SportPlannerNewVersion\\src\\back\\SportPlannerNW\\Models\\PerformanceModels.cs",
+              "RelativeDocumentMoniker": "Models\\PerformanceModels.cs",
+              "ToolTip": "C:\\Proyectos\\SportPlannerNewVersion\\src\\back\\SportPlannerNW\\Models\\PerformanceModels.cs",
+              "RelativeToolTip": "Models\\PerformanceModels.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-14T08:01:44.737Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
