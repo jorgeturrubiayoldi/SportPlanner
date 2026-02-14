@@ -1,10 +1,11 @@
-import { Component, computed, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { TeamService, Team, TeamSeason } from '../../core/services/team.service';
 import { SeasonService } from '../../core/services/season.service';
 import { AuthService } from '../../core/services/auth.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type Tab = 'players' | 'planning' | 'calendar';
 
@@ -26,6 +27,7 @@ export class TeamManagementComponent implements OnInit {
   private seasonService = inject(SeasonService);
   private authService = inject(AuthService);
   private planService = inject(PlanService);
+  private destroyRef = inject(DestroyRef);
 
   teamId = signal<string>('');
   currentTab = signal<Tab>('players');
@@ -73,9 +75,11 @@ export class TeamManagementComponent implements OnInit {
   ]);
 
   constructor() {
-    this.route.paramMap.subscribe(params => {
-      this.teamId.set(params.get('id') || '');
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed())
+      .subscribe(params => {
+        this.teamId.set(params.get('id') || '');
+      });
   }
 
   async ngOnInit() {

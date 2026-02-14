@@ -1,7 +1,8 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-language-switcher',
@@ -30,6 +31,7 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 })
 export class LanguageSwitcherComponent {
   private translate = inject(TranslateService);
+  private destroyRef = inject(DestroyRef);
   
   languages = ['es', 'en', 'fr'];
   currentLang = signal<string>('es');
@@ -41,10 +43,12 @@ export class LanguageSwitcherComponent {
     console.log('LanguageSwitcher initialized. Service lang:', serviceLang);
 
     // Subscribe to changes
-    this.translate.onLangChange.subscribe((event) => {
-      console.log('LanguageSwitcher: onLangChange event:', event.lang);
-      this.currentLang.set(event.lang);
-    });
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        console.log('LanguageSwitcher: onLangChange event:', event.lang);
+        this.currentLang.set(event.lang);
+      });
   }
 
   switchLanguage(lang: string) {

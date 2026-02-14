@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using SportPlannerNW.Models.DTOs;
 using SportPlannerNW.Services;
 
 namespace SportPlannerNW.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class PlayerController : ControllerBase

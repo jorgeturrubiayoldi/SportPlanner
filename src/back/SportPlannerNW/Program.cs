@@ -69,6 +69,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+// Global Exception Handler
+app.UseMiddleware<SportPlannerNW.Middleware.ErrorHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseCors();
