@@ -4,6 +4,7 @@ import { SupabaseService } from './supabase.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
+import { ActiveSubscription, Invoice, Sport, SubscribeRequest, SubscriptionMember } from '../models/subscription.model';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +36,9 @@ export class SubscriptionService {
     }
   }
 
-  async getSports(): Promise<any[]> {
+  async getSports(): Promise<Sport[]> {
     try {
-      return await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/sports`));
+      return await firstValueFrom(this.http.get<Sport[]>(`${this.apiUrl}/sports`));
     } catch (err) {
       console.error('Error fetching sports from backend:', err);
       return [];
@@ -46,12 +47,14 @@ export class SubscriptionService {
 
   async subscribeToPlan(userId: string, planType: string, price: number, sportId: string): Promise<{ success: boolean; error?: string }> {
     try {
-      await firstValueFrom(this.http.post<any>(`${this.apiUrl}/subscribe`, {
+      const request: SubscribeRequest = {
         userId,
         planType,
         amount: price,
         sportId
-      }));
+      };
+      
+      await firstValueFrom(this.http.post<any>(`${this.apiUrl}/subscribe`, request));
 
       this.hasActiveSubscription.set(true);
       return { success: true };
@@ -90,18 +93,18 @@ export class SubscriptionService {
     }
   }
 
-  async getInvoices(subscriptionId: string): Promise<any[]> {
+  async getInvoices(subscriptionId: string): Promise<Invoice[]> {
     try {
-      return await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/${subscriptionId}/invoices`));
+      return await firstValueFrom(this.http.get<Invoice[]>(`${this.apiUrl}/${subscriptionId}/invoices`));
     } catch (err) {
       console.error('Error fetching invoices:', err);
       return [];
     }
   }
 
-  async getMembers(subscriptionId: string): Promise<any[]> {
+  async getMembers(subscriptionId: string): Promise<SubscriptionMember[]> {
     try {
-      return await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/${subscriptionId}/members`));
+      return await firstValueFrom(this.http.get<SubscriptionMember[]>(`${this.apiUrl}/${subscriptionId}/members`));
     } catch (err) {
       console.error('Error fetching members:', err);
       return [];
@@ -127,14 +130,4 @@ export class SubscriptionService {
       return false;
     }
   }
-}
-
-export interface ActiveSubscription {
-  id: string;
-  sportId: string;
-  sportName: string;
-  planType: string;
-  status: string;
-  startDate: string;
-  endDate: string;
 }

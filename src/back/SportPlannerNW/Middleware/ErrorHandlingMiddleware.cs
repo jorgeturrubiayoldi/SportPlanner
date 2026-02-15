@@ -52,8 +52,7 @@ public class ErrorHandlingMiddleware
                 break;
             default:
                 // Don't expose stack trace in production unless specifically requested or safe
-                var errorMessage = _env.IsDevelopment() ? exception.Message + "
-" + exception.StackTrace : "An unexpected error occurred.";
+                var errorMessage = _env.IsDevelopment() ? $"{exception.Message} {exception.StackTrace}" : "An unexpected error occurred.";
                 result = JsonSerializer.Serialize(new { error = errorMessage });
                 break;
         }

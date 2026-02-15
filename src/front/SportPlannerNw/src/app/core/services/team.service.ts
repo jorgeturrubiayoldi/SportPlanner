@@ -2,56 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
-
-export type TeamGender = 'Male' | 'Female' | 'Mixed';
-
-export interface Team {
-  id: string;
-  subscriptionId: string;
-  name: string;
-  gender: TeamGender;
-  birthYear?: number;
-  description?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface TeamWithSeason {
-  id: string;
-  name: string;
-  gender: TeamGender;
-  birthYear?: number;
-  description?: string;
-  isActive: boolean;
-  category: string;
-  division?: string;
-  seasonId: string;
-  seasonName: string;
-}
-
-export interface CreateTeamRequest {
-  subscriptionId: string;
-  name: string;
-  gender: TeamGender;
-  birthYear?: number;
-  description?: string;
-}
-
-export interface CreateTeamSeasonRequest {
-  teamId: string;
-  seasonId: string;
-  category: string;
-  division?: string;
-}
-
-export interface TeamSeason {
-  id: string;
-  teamId: string;
-  seasonId: string;
-  category: string;
-  division?: string;
-}
+import { CreateTeamRequest, CreateTeamSeasonRequest, Team, TeamSeason, TeamWithSeason } from '../models/team.model';
+import { CreatePlayerRequest, Player } from '../models/player.model';
 
 @Injectable({
   providedIn: 'root'
@@ -112,8 +64,8 @@ export class TeamService {
 
   // --- TeamSeason Operations (Assigning/Managing Categories) ---
 
-  async assignTeamToSeason(request: CreateTeamSeasonRequest): Promise<any> {
-    return await firstValueFrom(this.http.post(`${this.apiUrl}/season`, request));
+  async assignTeamToSeason(request: CreateTeamSeasonRequest): Promise<TeamSeason> {
+    return await firstValueFrom(this.http.post<TeamSeason>(`${this.apiUrl}/season`, request));
   }
 
   // --- Composite Operations ---
@@ -149,17 +101,17 @@ export class TeamService {
   }
   // --- Player Operations ---
   
-  async getPlayersByTeam(teamId: string): Promise<any[]> {
+  async getPlayersByTeam(teamId: string): Promise<Player[]> {
     try {
-      return await firstValueFrom(this.http.get<any[]>(`${environment.apiUrl}/Player/team/${teamId}`)) || [];
+      return await firstValueFrom(this.http.get<Player[]>(`${environment.apiUrl}/Player/team/${teamId}`)) || [];
     } catch (error) {
       console.error('Error fetching players:', error);
       return [];
     }
   }
 
-  async createPlayer(playerData: any): Promise<any> {
-    return await firstValueFrom(this.http.post<any>(`${environment.apiUrl}/Player`, playerData));
+  async createPlayer(playerData: CreatePlayerRequest): Promise<Player> {
+    return await firstValueFrom(this.http.post<Player>(`${environment.apiUrl}/Player`, playerData));
   }
 
   async deletePlayer(playerId: string): Promise<void> {

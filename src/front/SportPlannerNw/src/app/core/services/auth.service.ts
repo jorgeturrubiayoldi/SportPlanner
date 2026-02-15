@@ -6,6 +6,8 @@ import { User } from '../models/user.model';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthResponse, LoginRequest, RegisterRequest } from '../models/auth-response.model';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,7 @@ export class AuthService {
   private apiUrl = `${environment.apiUrl}/Auth`;
 
   currentUser = signal<User | null>(null);
+  sessionToken = signal<string | null>(null);
   isAuthenticated = computed(() => this.currentUser() !== null);
   loading = signal(false);
 
@@ -30,6 +33,7 @@ export class AuthService {
     try {
       const { data: { session } } = await this.supabaseService.getClient().auth.getSession();
       if (session?.user) {
+        this.sessionToken.set(session.access_token);
         await this.loadProfile(session.user);
       }
     } catch (error) {
@@ -37,9 +41,9 @@ export class AuthService {
     }
   }
 
-  private async loadProfile(authUser: any) {
+  private async loadProfile(authUser: SupabaseUser) {
     try {
-      const { data: profile, error } = await this.supabaseService.getClient()
+      const { data: profile } = await this.supabaseService.getClient()
         .from('user_profiles')
         .select('*')
         .eq('id', authUser.id)
@@ -78,8 +82,9 @@ export class AuthService {
   async signUp(email: string, password: string, fullName: string, language: string): Promise<{ success: boolean; error?: string }> {
     this.loading.set(true);
     try {
+      const request: RegisterRequest = { email, password, fullName, language };
       const response = await firstValueFrom(
-        this.http.post<any>(`${this.apiUrl}/register`, { email, password, fullName, language })
+        this.http.post<AuthResponse>(`${this.apiUrl}/register`, request)
       );
 
       if (response && response.token) {
@@ -102,8 +107,12 @@ export class AuthService {
       }
 
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.error?.message || 'Error al crear la cuenta' };
+    } catch (error: unknown) {
+      let errorMessage = 'Error al crear la cuenta';
+      if (error && typeof error === 'object' && 'error' in error) {
+        errorMessage = (error as { error?: { message?: string } }).error?.message || errorMessage;
+      }
+      return { success: false, error: errorMessage };
     } finally {
       this.loading.set(false);
     }
@@ -112,8 +121,9 @@ export class AuthService {
   async signIn(email: string, password: string): Promise<{ success: boolean; error?: string }> {
     this.loading.set(true);
     try {
+      const request: LoginRequest = { email, password };
       const response = await firstValueFrom(
-        this.http.post<any>(`${this.apiUrl}/login`, { email, password })
+        this.http.post<AuthResponse>(`${this.apiUrl}/login`, request)
       );
 
       if (response && response.id) {
@@ -140,9 +150,13 @@ export class AuthService {
       }
       
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
-      return { success: false, error: error.error?.message || 'Credenciales inválidas' };
+      let errorMessage = 'Credenciales inválidas';
+      if (error && typeof error === 'object' && 'error' in error) {
+        errorMessage = (error as { error?: { message?: string } }).error?.message || errorMessage;
+      }
+      return { success: false, error: errorMessage };
     } finally {
       this.loading.set(false);
     }
@@ -153,7 +167,7 @@ export class AuthService {
     try {
       await this.supabaseService.getClient().auth.signOut();
       this.currentUser.set(null);
-      this.router.navigate(['/auth/login']);
+      await this.router.navigate(['/auth/login']);
     } catch (error) {
       console.error('Error signing out:', error);
     }

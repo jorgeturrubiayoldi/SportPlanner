@@ -1,20 +1,21 @@
-import { User } from './user.model';
-
 export interface AuthResponse {
-  user: User | null;
-  session: Session | null;
-  error?: AuthError;
+  id: string;
+  email: string;
+  fullName: string;
+  token: string;
+  refreshToken?: string;
+  language?: string;
+  avatarUrl?: string;
 }
 
-export interface Session {
-  access_token: string;
-  refresh_token: string;
-  expires_in?: number;
-  token_type?: string;
-  user?: any; // Supabase user object structure is complex, acceptable to keep any here or strictly define it later
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  fullName: string;
+  language: string;
 }
 
-export interface AuthError {
-  message: string;
-  status?: number;
+export interface LoginRequest {
+  email: string;
+  password: string;
 }
