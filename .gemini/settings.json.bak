@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "webmcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@jason.today/webmcp@latest",
+        "--mcp"
+      ]
+    }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "name": "load-conductor",
+        "type": "command",
+        "command": "node $GEMINI_PROJECT_DIR/.gemini/hooks/load-conductor.js"
+      }
+    ]
+  }
+}

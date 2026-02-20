@@ -17,6 +17,7 @@ Toda la documentación estratégica y planes de ejecución se encuentran en la c
 - [Registro de Tracks](./conductor/tracks.md)
 
 ## Estado Actual
-- Estructura base de Front y Back establecida.
-- Modelos de base de datos definidos en migraciones SQL.
-- Lógica funcional documentada en `Documentacion/Producto/Analisis_Funcional_SportPlanner.md`.
+- **Backend:** Finalizada la implementación de Performance Tables y Marketplace (Migración Total Domination).
+- **Frontend:** Estructura base establecida; integración de WebMCP iniciada en `index.html`.
+- **Database:** Esquemas de IA, Marketplace y RLS actualizados en Supabase.
+- **Documentación:** Sincronizada con el estado real del sistema de archivos.

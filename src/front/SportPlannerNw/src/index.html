@@ -6,6 +6,22 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    console.log('[Index] Attempting to load WebMCP script...');
+  </script>
+  <script 
+    src="https://cdn.jsdelivr.net/npm/@jason.today/webmcp@0.1.13/src/webmcp.js"
+    onload="console.log('[Index] WebMCP script loaded successfully via CDN')"
+    onerror="console.error('[Index] FAILED to load WebMCP script from CDN')"
+  ></script>
+  <script>
+    // Class declarations don't create window properties (they behave like let).
+    // Explicitly promote WebMCP to window so Angular services can detect it.
+    if (typeof WebMCP !== 'undefined') {
+      window.WebMCP = WebMCP;
+      console.log('[Index] WebMCP class promoted to window.WebMCP');
+    }
+  </script>
 </head>
 <body>
   <app-root></app-root>

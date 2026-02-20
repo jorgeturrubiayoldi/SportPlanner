@@ -2,8 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
-import { CreateTeamRequest, CreateTeamSeasonRequest, Team, TeamSeason, TeamWithSeason } from '../models/team.model';
+import { CreateTeamRequest, CreateTeamSeasonRequest, Team, TeamSeason, TeamWithSeason, TeamGender } from '../models/team.model';
 import { CreatePlayerRequest, Player } from '../models/player.model';
+
+export type { CreateTeamRequest, CreateTeamSeasonRequest, Team, TeamSeason, TeamWithSeason, TeamGender };
 
 @Injectable({
   providedIn: 'root'

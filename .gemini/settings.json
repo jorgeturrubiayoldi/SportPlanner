@@ -1,11 +1,3 @@
 {
-  "hooks": {
-    "SessionStart": [
-      {
-        "name": "load-conductor",
-        "type": "command",
-        "command": "node $GEMINI_PROJECT_DIR/.gemini/hooks/load-conductor.js"
-      }
-    ]
-  }
+  "mcpServers": {}
 }

@@ -4,6 +4,8 @@ import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { AddConceptToPlanRequest, CreatePlanRequest, Plan, PlanConcept } from '../models/plan.model';
 
+export type { AddConceptToPlanRequest, CreatePlanRequest, Plan, PlanConcept };
+
 @Injectable({
   providedIn: 'root'
 })

@@ -44,13 +44,13 @@ export class CreatePlayerModalComponent {
         const playerRequest = {
           teamId: this.teamId,
           name: this.name,
-          lastName: this.lastName || null,
-          email: this.email || null,
-          position: this.position || null,
-          number: this.number || null
+          lastName: this.lastName || undefined,
+          email: this.email || undefined,
+          position: this.position || undefined,
+          number: this.number || undefined
         };
 
-      await this.teamService.createPlayer(playerRequest);
+      await this.teamService.createPlayer(playerRequest as any); // Temporary cast if needed, but undefined should work
 
       this.playerCreated.emit();
       this.close.emit();

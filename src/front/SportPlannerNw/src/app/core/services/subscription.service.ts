@@ -6,6 +6,8 @@ import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { ActiveSubscription, Invoice, Sport, SubscribeRequest, SubscriptionMember } from '../models/subscription.model';
 
+export type { ActiveSubscription, Invoice, Sport, SubscribeRequest, SubscriptionMember };
+
 @Injectable({
   providedIn: 'root'
 })
