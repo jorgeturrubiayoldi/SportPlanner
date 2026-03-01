@@ -40,6 +40,7 @@ public class SubscriptionService : ISubscriptionService
     public async Task<SubscriptionResponse> CreateSubscriptionAsync(SubscribeRequest request)
     {
         // 0. Validar si ya tiene suscripción activa (Regla de negocio: 1 User = 1 Active Subscription)
+        // CheckSubscriptionStatusAsync ya se encarga de limpiar las expiradas.
         bool hasActiveSubscription = await CheckSubscriptionStatusAsync(request.UserId);
         if (hasActiveSubscription)
         {
@@ -109,11 +110,26 @@ public class SubscriptionService : ISubscriptionService
             string nowIso = DateTime.UtcNow.ToString("o");
             Console.WriteLine($"Checking subscription for User: {userId} at {nowIso}");
             
+            // Cleanup: ensure we don't count expired subscriptions as active
+            // but they still count against the unique constraint if they are not marked as expired.
+            // So we proactively mark them as expired.
+            var expiredSubs = await _supabase.From<SubscriptionModel>()
+                .Filter("owner_id", Constants.Operator.Equals, userId)
+                .Filter("status", Constants.Operator.Equals, "active")
+                .Filter("end_date", Constants.Operator.LessThan, nowIso)
+                .Get();
+
+            foreach (var sub in expiredSubs.Models)
+            {
+                sub.Status = "expired";
+                await _supabase.From<SubscriptionModel>().Update(sub);
+                Console.WriteLine($"Marked subscription {sub.Id} as expired for user {userId}");
+            }
+
             // Using explicit chaining to avoid "failed to parse logic tree" error in Postgrest
             var response = await _supabase.From<SubscriptionModel>()
                 .Filter("owner_id", Constants.Operator.Equals, userId)
                 .Filter("status", Constants.Operator.Equals, "active")
-                .Filter("end_date", Constants.Operator.GreaterThan, nowIso)
                 .Get();
 
             bool hasActive = response.Models.Any();
