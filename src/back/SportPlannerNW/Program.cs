@@ -3,12 +3,41 @@ using Supabase;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using System.Reflection;
+using MediatR;
+using SportPlannerNW.Models.Common;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            var response = ApiResponse<object>.FallidoValidacion(errors);
+            return new BadRequestObjectResult(response);
+        };
+    });
 builder.Services.AddOpenApi();
+
+// FluentValidation
+builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+// MediatR
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
 // JWT Configuration
 var jwtSecret = builder.Configuration["Supabase:JwtSecret"];
@@ -40,7 +69,6 @@ builder.Services.AddScoped<Supabase.Client>(_ =>
     }));
 
 // Services Registration
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISeasonService, SeasonService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
